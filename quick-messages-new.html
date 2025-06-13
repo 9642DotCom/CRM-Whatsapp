@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens Rápidas - WhatsApp CRM</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <style>
+        .quick-msg-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            padding: 1.2rem;
+        }
+        .quick-msg-media {
+            max-width: 100px;
+            max-height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+        .shortcut-badge {
+            background: #25d366;
+            color: #fff;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            padding: 2px 8px;
+            margin-left: 8px;
+        }
+        .quick-msg-actions .btn {
+            margin-right: 8px;
+        }
+        .quick-msg-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .modal-lg { max-width: 600px; }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="wrapper d-flex">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp CRM</span>
+                </a>
+            </div>
+            <nav class="sidebar-menu">
+                <h3>Menu Principal</h3>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#whatsappSubmenu" class="nav-link dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                    <span class="badge bg-primary badge-menu">2</span>
+                </a>
+                <div class="submenu collapse" id="whatsappSubmenu">
+                    <a href="connect-whatsapp.html" class="nav-link">
+                        <i class="fas fa-plug"></i>
+                        <span>Conectar WhatsApp</span>
+                    </a>
+                    <a href="whatsapp-sessions.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Sessões</span>
+                    </a>
+                </div>
+                <a href="conversas.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Conversas</span>
+                    <span class="badge bg-success badge-menu">5</span>
+                </a>
+                <a href="kanban.html" class="nav-link">
+                    <i class="fas fa-tasks"></i>
+                    <span>Funil de Vendas</span>
+                </a>
+                <a href="quick-messages.html" class="nav-link">
+                    <i class="fas fa-bolt"></i>
+                    <span>Mensagens Rápidas</span>
+                </a>
+                <a href="bulk-messages.html" class="nav-link">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Disparo em Massa</span>
+                </a>
+                <a href="extract-contacts.html" class="nav-link">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Extrair Contatos</span>
+                </a>
+                <a href="contacts.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Contatos</span>
+                </a>
+                <a href="agents.html" class="nav-link">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Agentes</span>
+                </a>
+                <h3>Ferramentas</h3>
+                <a href="campaigns.html" class="nav-link">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Campanhas</span>
+                </a>
+                <a href="templates.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Modelos</span>
+                </a>
+                <a href="import-export.html" class="nav-link">
+                    <i class="fas fa-file-import"></i>
+                    <span>Importar/Exportar</span>
+                </a>
+                <h3>Configurações</h3>
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="profile.html" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Meu Perfil</span>
+                </a>
+                <a href="#" class="nav-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </nav>
+        </div>
+        <nav class="top-navbar">
+            <button class="menu-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-menu">
+                <div class="user-info">
+                    <p class="user-name">João Silva</p>
+                    <p class="user-role">Administrador</p>
+                </div>
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation -->
+            <!--#include virtual="partials/top-navbar.html" -->
+
+            <!-- Page Content -->
+            <div class="container-fluid py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0">Mensagens Rápidas</h1>
+                    <button class="btn btn-primary" id="addQuickMsgBtn">
+                        <i class="fas fa-plus me-2"></i>Nova Mensagem
+                    </button>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="quick-msg-list" id="quickMsgList">
+                                    <!-- As mensagens rápidas serão carregadas aqui -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mensagem Rápida -->
+    <div class="modal fade" id="quickMsgModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quickMsgModalLabel">Nova Mensagem Rápida</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="quickMsgForm">
+                        <input type="hidden" id="quickMsgId">
+                        <div class="mb-3">
+                            <label for="quickMsgTitle" class="form-label">Título da Mensagem</label>
+                            <input type="text" class="form-control" id="quickMsgTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quickMsgContent" class="form-label">Conteúdo da Mensagem</label>
+                            <textarea class="form-control" id="quickMsgContent" rows="4" required></textarea>
+                            <div class="form-text mt-2">
+                                <small>Dica: Use variáveis como {nome} ou {empresa} para personalização automática</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mídia (opcional)</label>
+                            <div class="input-group mb-2">
+                                <input type="file" id="quickMsgMedia" class="form-control" accept="image/*,audio/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx">
+                            </div>
+                            <div id="mediaPreview" class="mt-2"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quickMsgShortcut" class="form-label">Atalho (opcional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">/</span>
+                                <input type="text" class="form-control" id="quickMsgShortcut" placeholder="Ex: orcamento">
+                            </div>
+                            <div class="form-text">
+                                <small>Digite uma palavra-chave para usar como atalho no chat</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveQuickMsgBtn">Salvar Mensagem</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/navigation.js"></script>
+    <script>
+        // Código JavaScript específico para a página de mensagens rápidas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicialização do componente de mensagens rápidas
+            renderQuickMsgs();
+            
+            // Event listeners
+            document.getElementById('addQuickMsgBtn').addEventListener('click', function() {
+                resetQuickMsgForm();
+                document.getElementById('quickMsgModalLabel').innerText = 'Nova Mensagem Rápida';
+                var modal = new bootstrap.Modal(document.getElementById('quickMsgModal'));
+                modal.show();
+            });
+            
+            document.getElementById('saveQuickMsgBtn').addEventListener('click', saveQuickMsg);
+            document.getElementById('quickMsgMedia').addEventListener('change', handleMediaUpload);
+        });
+        
+        // Funções da aplicação
+        function renderQuickMsgs() {
+            // Implementar lógica para carregar e exibir as mensagens rápidas
+            const quickMsgList = document.getElementById('quickMsgList');
+            quickMsgList.innerHTML = '<p class="text-muted text-center py-4">Nenhuma mensagem rápida cadastrada. Clique em "Nova Mensagem" para começar.</p>';
+        }
+        
+        function resetQuickMsgForm() {
+            document.getElementById('quickMsgForm').reset();
+            document.getElementById('mediaPreview').innerHTML = '';
+            document.getElementById('quickMsgId').value = '';
+        }
+        
+        function saveQuickMsg() {
+            // Implementar lógica para salvar a mensagem rápida
+            alert('Mensagem salva com sucesso!');
+            var modal = bootstrap.Modal.getInstance(document.getElementById('quickMsgModal'));
+            modal.hide();
+            renderQuickMsgs();
+        }
+        
+        function handleMediaUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const preview = document.getElementById('mediaPreview');
+            preview.innerHTML = '';
+            
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'img-thumbnail mt-2';
+                img.style.maxWidth = '200px';
+                preview.appendChild(img);
+            } else {
+                const div = document.createElement('div');
+                div.className = 'alert alert-info mt-2';
+                div.innerHTML = `<i class="fas fa-file me-2"></i>${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                preview.appendChild(div);
+            }
+        }
+        
+        // Funções globais
+        window.editQuickMsg = function(id) {
+            // Implementar lógica para editar mensagem rápida
+            console.log('Editar mensagem:', id);
+        };
+        
+        window.deleteQuickMsg = function(id) {
+            if (confirm('Tem certeza que deseja excluir esta mensagem rápida?')) {
+                // Implementar lógica para excluir mensagem rápida
+                alert('Mensagem excluída com sucesso!');
+                renderQuickMsgs();
+            }
+        };
+    </script>
+    <script>
+        // Inicialização do menu responsivo (igual index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+                });
+            }
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('show');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extrair Contatos - WhatsApp CRM</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Custom CSS para o histórico -->
+    <style>
+        .table-hover tbody tr {
+            cursor: pointer;
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        .table-active {
+            background-color: rgba(0, 123, 255, 0.1) !important;
+        }
+        #bulkActionsMenu {
+            display: none;
+            min-width: 200px;
+            z-index: 1000;
+        }
+        .dropdown-divider {
+            margin: 0.25rem 0;
+        }
+        .dropdown-item {
+            padding: 0.375rem 1rem;
+        }
+        .dropdown-header {
+            padding: 0.25rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+    <style>
+        .search-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        }
+        .results-container {
+            margin-top: 2rem;
+            display: none;
+        }
+        .contact-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .contact-card:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .spinner-grow {
+            width: 3rem;
+            height: 3rem;
+        }
+        .contact-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #6c757d;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp CRM</span>
+                </a>
+            </div>
+            <nav class="sidebar-menu">
+                <h3>Menu Principal</h3>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#whatsappSubmenu" class="nav-link dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                    <span class="badge bg-primary badge-menu">2</span>
+                </a>
+                <div class="submenu collapse" id="whatsappSubmenu">
+                    <a href="connect-whatsapp.html" class="nav-link">
+                        <i class="fas fa-plug"></i>
+                        <span>Conectar WhatsApp</span>
+                    </a>
+                    <a href="whatsapp-sessions.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Sessões</span>
+                    </a>
+                </div>
+                <a href="conversas.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Conversas</span>
+                    <span class="badge bg-success badge-menu">5</span>
+                </a>
+                <a href="kanban.html" class="nav-link">
+                    <i class="fas fa-tasks"></i>
+                    <span>Funil de Vendas</span>
+                </a>
+                <a href="quick-messages.html" class="nav-link">
+                    <i class="fas fa-bolt"></i>
+                    <span>Mensagens Rápidas</span>
+                </a>
+                <a href="bulk-messages.html" class="nav-link">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Disparo em Massa</span>
+                </a>
+                <a href="extract-contacts.html" class="nav-link">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Extrair Contatos</span>
+                </a>
+                <a href="contacts.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Contatos</span>
+                </a>
+                <a href="agents.html" class="nav-link">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Agentes</span>
+                </a>
+                <h3>Ferramentas</h3>
+                <a href="campaigns.html" class="nav-link">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Campanhas</span>
+                </a>
+                <a href="templates.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Modelos</span>
+                </a>
+                <a href="import-export.html" class="nav-link">
+                    <i class="fas fa-file-import"></i>
+                    <span>Importar/Exportar</span>
+                </a>
+                <h3>Configurações</h3>
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="profile.html" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Meu Perfil</span>
+                </a>
+                <a href="#" class="nav-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </nav>
+        </div>
+        <nav class="top-navbar">
+            <button class="menu-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-menu">
+                <div class="user-info">
+                    <p class="user-name">João Silva</p>
+                    <p class="user-role">Administrador</p>
+                </div>
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+                </div>
+            </div>
+        </nav>
+            <div class="sidebar-header">
+                <h3>WhatsApp CRM</h3>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="#whatsappSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <ul class="collapse list-unstyled" id="whatsappSubmenu">
+                        <li><a href="connect-whatsapp.html">Conectar WhatsApp</a></li>
+                        <li><a href="whatsapp-sessions.html">Sessões</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="conversas.html"><i class="fas fa-comments"></i> Conversas</a>
+                </li>
+                <li>
+                    <a href="kanban.html"><i class="fas fa-tasks"></i> Funil de Vendas</a>
+                </li>
+                <li>
+                    <a href="quick-messages.html"><i class="fas fa-bolt"></i> Mensagens Rápidas</a>
+                </li>
+                <li class="active">
+                    <a href="extract-contacts.html"><i class="fas fa-search-plus"></i> Extrair Contatos</a>
+                </li>
+                <li>
+                    <a href="bulk-messages.html"><i class="fas fa-paper-plane"></i> Disparo em Massa</a>
+                </li>
+                <li>
+                    <a href="contacts.html"><i class="fas fa-users"></i> Contatos</a>
+                </li>
+                <li>
+                    <a href="agents.html"><i class="fas fa-user-tie"></i> Agentes</a>
+                </li>
+                <li>
+                    <a href="settings.html"><i class="fas fa-cog"></i> Configurações</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="ms-auto">
+                        <span class="me-3">Olá, Admin</span>
+                        <img src="https://via.placeholder.com/40" class="rounded-circle" alt="User">
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid py-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-search-plus me-2"></i> Extrair Contatos</h2>
+                    <button id="useSelectedBtn" class="btn btn-primary" style="display: none;">
+                        <i class="fas fa-paper-plane me-1"></i> Usar Selecionados
+                    </button>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="card mb-4" id="paymentSection">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-crown me-2"></i> Extração Premium</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <div class="mb-4">
+                                <i class="fas fa-lock fa-3x text-primary mb-3"></i>
+                                <h4>Extração de Contatos Premium</h4>
+                                <p class="text-muted">Para acessar nossa ferramenta de extração de contatos, é necessário realizar um pagamento único de:</p>
+                                <div class="display-4 text-primary mb-3">R$ 5,00</div>
+                                <p class="text-muted small">Você receberá até 50 contatos relevantes baseados na sua busca.</p>
+                            </div>
+                            
+                            <button id="generatePixBtn" class="btn btn-success btn-lg">
+                                <i class="fas fa-qrcode me-2"></i> Pagar com PIX
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIX Payment QR Code -->
+                <div class="card mb-4 d-none" id="pixPaymentSection">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-qrcode me-2"></i> Pagamento via PIX</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="mb-3">Escaneie o QR Code abaixo ou copie o código PIX para efetuar o pagamento de <strong>R$ 5,00</strong>:</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mx-auto">
+                                <div class="p-3 border rounded mb-3">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=pix.example.com/1234567890" id="pixQrCode" class="img-fluid mb-3" alt="QR Code PIX">
+                                    <p class="text-muted small mb-0">Valor: <strong>R$ 5,00</strong></p>
+                                    <p class="text-muted small">Válido por: <strong>30 minutos</strong></p>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <input type="text" id="pixCode" class="form-control text-center" value="00020126330014BR.GOV.BCB.PIX0111pix@empresa.com5204000053039865802BR5913Empresa LTDA6008BRASILIA62070503***6304" readonly>
+                                    <button class="btn btn-outline-secondary" type="button" id="copyPixCode">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i> Após o pagamento, aguarde a confirmação automática (pode levar até 2 minutos).
+                                </div>
+                                
+                                <button id="checkPaymentBtn" class="btn btn-primary">
+                                    <i class="fas fa-sync-alt me-2"></i> Verificar Pagamento
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div class="card mb-4" id="historySection">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-history me-2"></i> Histórico de Extrações</h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-2" id="bulkActionsBtn" disabled>
+                                <i class="fas fa-tasks me-1"></i> Ações em Lote
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" id="toggleHistoryBtn">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0 d-none" id="historyListContainer">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="40">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="selectAllLists">
+                                            </div>
+                                        </th>
+                                        <th>Nome da Lista</th>
+                                        <th>Termo de Busca</th>
+                                        <th>Cidade</th>
+                                        <th>Data</th>
+                                        <th>Contatos</th>
+                                        <th class="text-end">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyList">
+                                    <!-- Histórico será preenchido via JavaScript -->
+                                    <tr>
+                                        <td colspan="7" class="text-center p-4 text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                            Nenhuma extração no histórico
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions Dropdown -->
+                <div class="dropdown-menu dropdown-menu-end" id="bulkActionsMenu">
+                    <h6 class="dropdown-header">Ações em Lote</h6>
+                    <a class="dropdown-item" href="#" id="viewSelectedLists">
+                        <i class="far fa-eye me-2"></i> Visualizar Selecionados
+                    </a>
+                    <a class="dropdown-item" href="#" id="exportSelectedLists">
+                        <i class="fas fa-file-export me-2"></i> Exportar Selecionados
+                    </a>
+                    <a class="dropdown-item text-danger" href="#" id="deleteSelectedLists">
+                        <i class="far fa-trash-alt me-2"></i> Excluir Selecionados
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-primary" href="#" id="sendBulkMessage">
+                        <i class="fab fa-whatsapp me-2"></i> Enviar Mensagem em Massa
+                    </a>
+                </div>
+
+                <!-- Search Form (initially hidden) -->
+                <div class="search-container mb-4 d-none" id="searchSection">
+                    <h4 class="mb-4"><i class="fas fa-search me-2"></i>Buscar Contatos</h4>
+                    <form id="searchForm">
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label for="city" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="city" placeholder="Ex: São Paulo" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="term" class="form-label">Termo de Busca</label>
+                                <input type="text" class="form-control" id="term" placeholder="Ex: Restaurante, Mecânica, Escola" required>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search me-1"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner-grow text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="mt-3">Buscando contatos. Por favor, aguarde...</p>
+                </div>
+
+                <!-- Results -->
+                <div class="results-container" id="resultsContainer">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>Resultados da Busca</h4>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="selectAll">
+                            <label class="form-check-label" for="selectAll">
+                                Selecionar Tudo
+                            </label>
+                        </div>
+                    </div>
+                    <div id="contactsList">
+                        <!-- Contacts will be loaded here -->
+                    </div>
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center" id="pagination">
+                            <!-- Pagination will be generated here -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View List Modal -->
+    <div class="modal fade" id="viewListModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Visualizar Lista: <span id="viewListTitle"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>Endereço</th>
+                                </tr>
+                            </thead>
+                            <tbody id="viewListContent">
+                                <!-- Conteúdo será preenchido via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="exportListBtn">
+                        <i class="fas fa-file-export me-1"></i> Exportar Lista
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit List Modal -->
+    <div class="modal fade" id="editListModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Lista</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editListForm">
+                        <div class="mb-3">
+                            <label for="listName" class="form-label">Nome da Lista</label>
+                            <input type="text" class="form-control" id="listName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="listSearchTerm" class="form-label">Termo de Busca</label>
+                            <input type="text" class="form-control" id="listSearchTerm" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="listCity" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="listCity" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveListChanges">
+                        <i class="fas fa-save me-1"></i> Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir a lista selecionada? Esta ação não pode ser desfeita.</p>
+                    <p class="mb-0 fw-bold" id="deleteListName"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash-alt me-1"></i> Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container para notificações toast -->
+    <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
+
+    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Gerenciador de Histórico -->
+    <script src="js/history-manager.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/extract-contacts.js"></script>
+    
+    <script>
+        // Função para exibir notificações
+        function showToast(message, type = 'info') {
+            const toastId = 'toast-' + Date.now();
+            const toastHtml = `
+                <div class="toast align-items-center text-white bg-${type} border-0" id="${toastId}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+                    </div>
+                </div>
+            `;
+            
+            // Adiciona o toast ao container
+            $('#toastContainer').append(toastHtml);
+            
+            // Inicializa o toast
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, {
+                autohide: true,
+                delay: 3000
+            });
+            
+            // Mostra o toast
+            toast.show();
+            
+            // Remove o toast do DOM após ser escondido
+        }
+        if (localStorage.getItem('sidebarCollapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const submenu = this.nextElementSibling;
+                submenu.classList.toggle('show');
+                this.setAttribute('aria-expanded', 
+                    this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+            });
+        });
+    });
+</script>
+
+<!-- Função para exibir notificações -->
+<script>
+    function showToast(message, type = 'info') {
+        const toastId = 'toast-' + Date.now();
+        const toastHtml = `
+            <div class="toast align-items-center text-white bg-${type} border-0" id="${toastId}" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+                </div>
+            </div>
+        `;
+        
+        // Adiciona o toast ao container
+        $('#toastContainer').append(toastHtml);
+        
+        // Inicializa o toast
+        const toastElement = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: 3000
+        });
+        
+        // Mostra o toast
+        toast.show();
+        
+        // Remove o toast do DOM após ser escondido
+        toastElement.addEventListener('hidden.bs.toast', function () {
+            $(this).remove();
+        });
+    }
+</script>
+
+<!-- Restante do código -->
+<div class="dropdown-divider"></div>
+<a class="dropdown-item text-primary" href="#" id="sendBulkMessage">
+    <i class="fab fa-whatsapp me-2"></i> Enviar Mensagem em Massa
+</a>
+</div>
+
+<!-- Search Form (initially hidden) -->
+<div class="search-container mb-4 d-none" id="searchSection">
+    <h4 class="mb-4"><i class="fas fa-search me-2"></i>Buscar Contatos</h4>
+    <form id="searchForm">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label for="city" class="form-label">Cidade</label>
+                <input type="text" class="form-control" id="city" placeholder="Ex: São Paulo" required>
+            </div>
+            <div class="col-md-5">
+                <label for="term" class="form-label">Termo de Busca</label>
+                <input type="text" class="form-control" id="term" placeholder="Ex: Restaurante, Mecânica, Escola" required>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-1"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Loading Spinner -->
+<div class="loading-spinner" id="loadingSpinner">
+    <div class="spinner-grow text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+    </div>
+    <p class="mt-3">Buscando contatos. Por favor, aguarde...</p>
+</div>
+
+<!-- Results -->
+<div class="results-container" id="resultsContainer">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Resultados da Busca</h4>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="selectAll">
+            <label class="form-check-label" for="selectAll">
+                Selecionar Tudo
+            </label>
+        </div>
+    </div>
+    <div id="contactsList">
+        <!-- Contacts will be loaded here -->
+    </div>
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center" id="pagination">
+            <!-- Pagination will be generated here -->
+        </ul>
+    </nav>
+</div>
+</div>
+</div>
+</div>
+
+<!-- View List Modal -->
+<div class="modal fade" id="viewListModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Visualizar Lista: <span id="viewListTitle"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>Endereço</th>
+                            </tr>
+                        </thead>
+                        <tbody id="viewListContent">
+                            <!-- Conteúdo será preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="exportListBtn">
+                    <i class="fas fa-file-export me-1"></i> Exportar Lista
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit List Modal -->
+<div class="modal fade" id="editListModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Editar Lista</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editListForm">
+                    <div class="mb-3">
+                        <label for="listName" class="form-label">Nome da Lista</label>
+                        <input type="text" class="form-control" id="listName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="listSearchTerm" class="form-label">Termo de Busca</label>
+                        <input type="text" class="form-control" id="listSearchTerm" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="listCity" class="form-label">Cidade</label>
+                        <input type="text" class="form-control" id="listCity" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveListChanges">
+                    <i class="fas fa-save me-1"></i> Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir a lista selecionada? Esta ação não pode ser desfeita.</p>
+                <p class="mb-0 fw-bold" id="deleteListName"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt me-1"></i> Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container para notificações toast -->
+<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
+</body>
+</html>

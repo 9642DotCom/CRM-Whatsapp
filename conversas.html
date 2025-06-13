@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversas | WhatsApp CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #ece5dd;
+        }
+        /* Main content full width and centering */
+        .main-content-full {
+            margin-left: 0 !important;
+            width: 100vw;
+            transition: margin-left 0.35s cubic-bezier(.4,0,.2,1), width 0.35s cubic-bezier(.4,0,.2,1);
+        }
+        .main-content-collapsed {
+            margin-left: 60px !important;
+            width: calc(100vw - 60px);
+        }
+        /* Sidebar custom overlay and animation */
+        #sidebar {
+            background: #075e54;
+            color: #fff;
+            min-width: 250px;
+            max-width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -260px;
+            z-index: 1050;
+            transition: left 0.35s cubic-bezier(.4,0,.2,1);
+            box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+        }
+        #sidebar.active {
+            left: 0;
+        }
+        #sidebar .sidebar-header {
+            background: #128c7e;
+            padding: 20px;
+        }
+        #sidebar ul.components li a {
+            color: #fff;
+        }
+        #sidebar ul.components li.active > a,
+        #sidebar ul.components li a:hover {
+            background: #25d366;
+            color: #075e54;
+        }
+        /* Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 1049;
+            transition: opacity 0.3s;
+        }
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+        /* Content shift for desktop */
+        @media (min-width: 992px) {
+            #sidebar {
+                left: 0;
+                position: relative;
+                min-width: 250px;
+                max-width: 250px;
+                height: auto;
+                box-shadow: none;
+                z-index: auto;
+                transition: none;
+            }
+            #sidebar.active {
+                left: 0;
+            }
+            .sidebar-overlay {
+                display: none !important;
+            }
+            #content {
+                margin-left: 250px;
+                transition: margin-left 0.3s;
+            }
+            #sidebar.inactive {
+                display: none;
+            }
+        }
+        @media (max-width: 991.98px) {
+            #sidebar {
+                left: -260px;
+                position: fixed;
+                height: 100vh;
+                z-index: 1050;
+                transition: left 0.35s cubic-bezier(.4,0,.2,1);
+            }
+            #sidebar.active {
+                left: 0;
+            }
+            #content {
+                margin-left: 0;
+            }
+        }
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            background: #ece5dd;
+            overflow: hidden;
+        }
+        .sidebar-chats {
+            width: 350px;
+            background: #fff;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s;
+        }
+        .sidebar-chats .header {
+            background: #075e54;
+            color: #fff;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+        }
+        .sidebar-chats .header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        .sidebar-chats .search {
+            padding: 12px 16px;
+            background: #f6f6f6;
+        }
+        .sidebar-chats .search input {
+            width: 100%;
+            border-radius: 20px;
+            border: none;
+            padding: 8px 16px;
+            background: #e5e5e5;
+        }
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .chat-list-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+        .chat-list-item:hover, .chat-list-item.active {
+            background: #e1f3fb;
+        }
+        .chat-list-item img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 14px;
+        }
+        .chat-list-item .chat-info {
+            flex: 1;
+        }
+        .chat-list-item .chat-info .chat-name {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .chat-list-item .chat-info .chat-last {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        .chat-list-item .chat-time {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #efeae2;
+            position: relative;
+        }
+        .main-chat .chat-header {
+            background: #075e54;
+            color: #fff;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .main-chat .chat-header img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            margin-right: 16px;
+        }
+        .main-chat .chat-header .chat-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+        }
+        .main-chat .chat-header .chat-status {
+            font-size: 0.95rem;
+            color: #d0f8ce;
+        }
+        .main-chat .chat-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 24px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: url('https://static.whatsapp.net/rsrc.php/v3/ym/r/8lCz3Sg0n5H.png') repeat;
+            background-size: 350px 350px;
+        }
+        .message {
+            max-width: 68%;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 2px;
+            font-size: 1.03rem;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            animation: fadeInMsg 0.4s;
+        }
+        .message.sent {
+            background: #dcf8c6;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .message.received {
+            background: #fff;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .message .msg-time {
+            font-size: 0.78rem;
+            color: #888;
+            margin-left: 8px;
+        }
+        @keyframes fadeInMsg {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .main-chat .chat-footer {
+            background: #f7f7f7;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #ddd;
+            gap: 10px;
+        }
+        .main-chat .chat-footer .input-group {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .main-chat .chat-footer input[type="text"] {
+            flex: 1;
+            border-radius: 20px;
+            border: none;
+            padding: 10px 18px;
+            background: #e5e5e5;
+            font-size: 1.07rem;
+        }
+        .main-chat .chat-footer .btn {
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .sidebar-chats { width: 90px; }
+            .sidebar-chats .header span, .sidebar-chats .search, .sidebar-chats .chat-list-item .chat-info, .sidebar-chats .chat-list-item .chat-time { display: none; }
+            .sidebar-chats .header img { margin-right: 0; }
+            .sidebar-chats .chat-list-item img { margin-right: 0; }
+        }
+        @media (max-width: 700px) {
+            .chat-container { flex-direction: column; }
+            .sidebar-chats { width: 100vw; height: 120px; flex-direction: row; border-right: none; border-bottom: 1px solid #ddd; }
+            .sidebar-chats .header { flex: 1; padding: 10px; }
+            .main-chat { height: calc(100vh - 120px); }
+        }
+        @media (max-width: 500px) {
+            .main-chat .chat-header { padding: 10px; }
+            .main-chat .chat-body { padding: 10px 5px 12px 5px; }
+            .main-chat .chat-footer { padding: 8px 5px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" style="display:none;"></div>
+    <!-- Conteúdo principal em full screen -->
+    <div id="content" class="main-content-full" style="min-height:100vh;width:100vw;transition:margin-left 0.35s cubic-bezier(.4,0,.2,1);">
+
+            <nav class="top-navbar">
+                <button class="menu-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <p class="user-name">João Silva</p>
+                        <p class="user-role">Administrador</p>
+                    </div>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+                    </div>
+                </div>
+            </nav>
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="ms-auto">
+                        <span class="me-3">Olá, Admin</span>
+                        <img src="https://via.placeholder.com/40" class="rounded-circle" alt="User">
+                    </div>
+                </div>
+            </nav>
+            <!-- Barra de seleção de sessão e atendente -->
+    <div class="container-fluid py-2 bg-white border-bottom" style="z-index:10; position:relative;">
+        <div class="row align-items-center g-2">
+            <div class="col-md-3 col-6">
+                <select class="form-select" id="sessionSelect">
+                    <option value="1">Sessão 1 (Atendimento)</option>
+                    <option value="2">Sessão 2 (Vendas)</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-6">
+                <select class="form-select" id="attendantSelect">
+                    <option value="Ana Paula">Ana Paula</option>
+                    <option value="João Pedro">João Pedro</option>
+                    <option value="Equipe">Equipe</option>
+                </select>
+            </div>
+            <div class="col-md-6 mt-2 mt-md-0 text-end">
+                <button class="btn btn-outline-secondary btn-sm" id="quickMsgManageBtn"><i class="fas fa-bolt"></i> Mensagens Rápidas</button>
+                <div class="dropdown d-inline-block ms-2">
+                    <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="quickMsgDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bolt"></i> Enviar Rápida
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="quickMsgDropdown" id="quickMsgMenu">
+                        <!-- Mensagens rápidas inseridas via JS -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="chat-container">
+        <!-- Sidebar (Chats List) -->
+        <div class="sidebar-chats">
+            <div class="header">
+                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Avatar">
+                <span>Meu Perfil</span>
+            </div>
+            <div class="search">
+                <input type="text" id="searchChats" placeholder="Buscar conversa...">
+            </div>
+            <div class="chat-list" id="chatList">
+                <!-- Chats serão inseridos aqui via JS -->
+            </div>
+        </div>
+        <!-- Main Chat Area -->
+        <div class="main-chat" id="mainChat" style="display:none;">
+            <div class="chat-header">
+                <img src="" id="chatAvatar" alt="Avatar">
+                <div>
+                    <div class="chat-title" id="chatTitle"></div>
+                    <div class="chat-status" id="chatStatus"></div>
+                </div>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <!-- Mensagens -->
+            </div>
+            <div class="chat-footer">
+                <div class="input-group">
+                    <button class="btn btn-light" id="attachBtn" title="Anexar arquivo"><i class="fas fa-paperclip"></i></button>
+                    <input type="text" id="msgInput" placeholder="Digite uma mensagem...">
+                    <button class="btn btn-light" id="emojiBtn" title="Emoji"><i class="far fa-smile"></i></button>
+                </div>
+                <button class="btn btn-light" id="audioBtn" title="Enviar áudio"><i class="fas fa-microphone"></i></button>
+                <button class="btn btn-success" id="sendBtn" title="Enviar mensagem"><i class="fas fa-paper-plane"></i></button>
+                <input type="file" id="attachInput" style="display:none;" multiple>
+            </div>
+        </div>
+    </div>
+    <audio id="sendSound" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b5b3cfa4.mp3"></audio>
+    <audio id="receiveSound" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b5b3cfa4.mp3"></audio>
+    <audio id="audioRecordSound" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b5b3cfa4.mp3"></audio>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Modal Mensagens Rápidas -->
+    <div class="modal fade" id="quickMsgModal" tabindex="-1" aria-labelledby="quickMsgModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="quickMsgModalLabel">Gerenciar Mensagens Rápidas</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <form id="quickMsgForm">
+              <input type="hidden" id="quickMsgEditIdx">
+              <div class="mb-2">
+                <label class="form-label">Texto</label>
+                <textarea class="form-control" id="quickMsgText" rows="2" required></textarea>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Imagem</label>
+                <input type="file" class="form-control" id="quickMsgImage" accept="image/*">
+                <img id="quickMsgImagePreview" src="" alt="" style="max-width:100px;max-height:60px;display:none;margin-top:5px;"/>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Áudio</label>
+                <input type="file" class="form-control" id="quickMsgAudio" accept="audio/*">
+                <audio id="quickMsgAudioPreview" controls style="display:none;width:100%;margin-top:5px;"></audio>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Salvar Mensagem</button>
+            </form>
+            <hr>
+            <div id="quickMsgsList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar dinâmico: só existe no DOM quando aberto
+        const sidebarHTML = `
+        <nav id="sidebar" class="active" style="background:#075e54;color:#fff;width:250px;min-width:60px;max-width:250px;height:100vh;position:fixed;top:0;left:0;z-index:1050;transition:width 0.35s cubic-bezier(.4,0,.2,1),left 0.35s cubic-bezier(.4,0,.2,1);box-shadow:2px 0 12px rgba(0,0,0,0.15);overflow:hidden;">
+            <div class="sidebar-header d-flex align-items-center justify-content-between p-3">
+                <h3 class="mb-0 sidebar-title" style="font-size:1.25rem;">WhatsApp CRM</h3>
+                <button class="btn btn-link text-white d-lg-none" id="sidebarCloseBtn" style="font-size:1.5rem;"><i class="fas fa-times"></i></button>
+            </div>
+            <ul class="list-unstyled components px-2 pt-2">
+                <li class="mb-2">
+                    <a href="index.html" class="d-flex align-items-center py-2 px-2 rounded"><i class="fas fa-home me-2"></i> <span class="sidebar-text">Dashboard</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="#whatsappSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle d-flex align-items-center py-2 px-2 rounded">
+                        <i class="fab fa-whatsapp me-2"></i> <span class="sidebar-text">WhatsApp</span>
+                    </a>
+                    <ul class="collapse list-unstyled ps-4" id="whatsappSubmenu">
+                        <li><a href="connect-whatsapp.html" class="d-block py-1 sidebar-text">Conectar WhatsApp</a></li>
+                        <li><a href="whatsapp-sessions.html" class="d-block py-1 sidebar-text">Sessões</a></li>
+                    </ul>
+                </li>
+                <li class="active mb-2">
+                    <a href="conversas.html" class="d-flex align-items-center py-2 px-2 rounded"><i class="fas fa-comments me-2"></i> <span class="sidebar-text">Conversas</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="kanban.html" class="d-flex align-items-center py-2 px-2 rounded"><i class="fas fa-tasks me-2"></i> <span class="sidebar-text">Funil de Vendas</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="quick-messages.html" class="d-flex align-items-center py-2 px-2 rounded"><i class="fas fa-bolt me-2"></i> <span class="sidebar-text">Mensagens Rápidas</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="contacts.html" class="d-flex align-items-center py-2 px-2 rounded"><i class="fas fa-users me-2"></i> <span class="sidebar-text">Contatos</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="agents.html" class="d-flex align-items-center py-2 px-2 rounded"><i class="fas fa-user-tie me-2"></i> <span class="sidebar-text">Agentes</span></a>
+                </li>
+                <li class="mb-2">
+                    <a href="settings.html" class="d-flex align-items-center py-2 px-2 rounded"><i class="fas fa-cog me-2"></i> <span class="sidebar-text">Configurações</span></a>
+                </li>
+            </ul>
+        </nav>`;
+
+        function openSidebar() {
+    if ($('#sidebar').length === 0) {
+        $('body').append(sidebarHTML);
+        $('#sidebar').css({left:'-260px', width:'60px'});
+        setTimeout(()=>{
+            $('#sidebar').css({left:'0', width:'250px'});
+            $('.sidebar-text, .sidebar-title').fadeIn(200);
+        }, 10);
+        $('#sidebarOverlay').fadeIn(200).addClass('active');
+        // Botão X fecha
+        $(document).on('click', '#sidebarCloseBtn', closeSidebar);
+        // Overlay fecha
+        $('#sidebarOverlay').on('click', closeSidebar);
+    }
+}
+function closeSidebar() {
+    if (window.innerWidth < 700) {
+        // Mobile: remove do DOM
+        $('#sidebar').css({left:'-260px'});
+        $('#sidebarOverlay').fadeOut(200).removeClass('active');
+        setTimeout(()=>{
+            $('#sidebar').remove();
+            $(document).off('click', '#sidebarCloseBtn', closeSidebar);
+            $('#sidebarOverlay').off('click', closeSidebar);
+        }, 350);
+        $('#content').removeClass('main-content-collapsed').addClass('main-content-full');
+    } else {
+        // Desktop: colapsa e centraliza tela
+        $('#sidebar').css({width:'60px'});
+        $('.sidebar-text, .sidebar-title').fadeOut(150);
+        $('#sidebarOverlay').fadeOut(200).removeClass('active');
+        $('#content').removeClass('main-content-full').addClass('main-content-collapsed');
+    }
+}
+// Ao abrir menu, sobrepor tela
+function openSidebar() {
+    if ($('#sidebar').length === 0) {
+        $('body').append(sidebarHTML);
+        $('#sidebar').css({left:'-260px', width:'60px'});
+        setTimeout(()=>{
+            $('#sidebar').css({left:'0', width:'250px'});
+            $('.sidebar-text, .sidebar-title').fadeIn(200);
+        }, 10);
+        $('#sidebarOverlay').fadeIn(200).addClass('active');
+        // Botão X fecha
+        $(document).on('click', '#sidebarCloseBtn', closeSidebar);
+        // Overlay fecha
+        $('#sidebarOverlay').on('click', closeSidebar);
+        // Ao abrir, tela volta a ocupar 100vw sobreposta
+        $('#content').removeClass('main-content-collapsed').addClass('main-content-full');
+    }
+}
+
+        $(function() {
+            $('#sidebarOverlay').hide();
+            $('#sidebarCollapse').on('click', function () {
+                if ($('#sidebar').length) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+        });
+        // Mensagens rápidas (demo local)
+        let quickMsgs = [
+            {text:'Olá! Em que posso ajudar?', img:'', audio:''},
+            {text:'Já verifico para você!', img:'', audio:''}
+        ];
+        function renderQuickMsgsList() {
+            let html = '';
+            quickMsgs.forEach((msg, idx) => {
+                html += `<div class='border rounded p-2 mb-2 d-flex align-items-center justify-content-between'>
+                    <div>
+                        <span>${msg.text}</span>
+                        ${msg.img ? `<img src='${msg.img}' style='max-width:40px;max-height:30px;margin-left:8px;'>` : ''}
+                        ${msg.audio ? `<audio src='${msg.audio}' controls style='height:20px;vertical-align:middle;margin-left:8px;'></audio>` : ''}
+                    </div>
+                    <div>
+                        <button class='btn btn-sm btn-outline-primary me-1' onclick='editQuickMsg(${idx})'><i class="fas fa-edit"></i></button>
+                        <button class='btn btn-sm btn-outline-danger' onclick='deleteQuickMsg(${idx})'><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            });
+            $('#quickMsgsList').html(html);
+        }
+        function updateQuickMsgMenu() {
+            $('#quickMsgMenu').empty();
+            quickMsgs.forEach((msg, idx) => {
+                let icon = msg.img ? `<i class='fas fa-image text-success'></i> ` : msg.audio ? `<i class='fas fa-microphone text-primary'></i> ` : '';
+                $('#quickMsgMenu').append(`<li><a class='dropdown-item' href='#' onclick='sendQuickMsg(${idx});return false;'>${icon}${msg.text.substring(0,40)}</a></li>`);
+            });
+        }
+        function sendQuickMsg(idx) {
+            if (!currentChat) return;
+            const msg = quickMsgs[idx];
+            if (msg.text) currentChat.messages.push({from: 'me', text: msg.text, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})});
+            if (msg.img) currentChat.messages.push({from: 'me', text: `<img src='${msg.img}' style='max-width:120px;'>`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})});
+            if (msg.audio) currentChat.messages.push({from: 'me', text: `<audio src='${msg.audio}' controls style='width:120px;'></audio>`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})});
+            renderChat(currentChat);
+            document.getElementById('sendSound').play();
+        }
+        function editQuickMsg(idx) {
+            const msg = quickMsgs[idx];
+            $('#quickMsgEditIdx').val(idx);
+            $('#quickMsgText').val(msg.text);
+            $('#quickMsgImagePreview').hide();
+            $('#quickMsgImage').val('');
+            if (msg.img) { $('#quickMsgImagePreview').attr('src', msg.img).show(); } else { $('#quickMsgImagePreview').hide(); }
+            $('#quickMsgAudioPreview').hide();
+            $('#quickMsgAudio').val('');
+            if (msg.audio) { $('#quickMsgAudioPreview').attr('src', msg.audio).show(); } else { $('#quickMsgAudioPreview').hide(); }
+        }
+        function deleteQuickMsg(idx) {
+            quickMsgs.splice(idx,1);
+            renderQuickMsgsList();
+            updateQuickMsgMenu();
+        }
+        $('#quickMsgManageBtn').on('click', function() {
+            $('#quickMsgEditIdx').val('');
+            $('#quickMsgText').val('');
+            $('#quickMsgImage').val('');
+            $('#quickMsgImagePreview').hide();
+            $('#quickMsgAudio').val('');
+            $('#quickMsgAudioPreview').hide();
+            renderQuickMsgsList();
+            $('#quickMsgModal').modal('show');
+        });
+        $('#quickMsgForm').on('submit', function(e) {
+            e.preventDefault();
+            let idx = $('#quickMsgEditIdx').val();
+            let text = $('#quickMsgText').val();
+            let img = $('#quickMsgImagePreview').attr('src') || '';
+            let audio = $('#quickMsgAudioPreview').attr('src') || '';
+            if (idx === '') {
+                quickMsgs.push({text,img,audio});
+            } else {
+                quickMsgs[idx] = {text,img,audio};
+            }
+            renderQuickMsgsList();
+            updateQuickMsgMenu();
+            $('#quickMsgModal').modal('hide');
+        });
+        $('#quickMsgImage').on('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    $('#quickMsgImagePreview').attr('src', evt.target.result).show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        $('#quickMsgAudio').on('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    $('#quickMsgAudioPreview').attr('src', evt.target.result).show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // Inicialização extra
+        $(function() {
+            updateQuickMsgMenu();
+        });
+        // Dados de exemplo para chats
+        const chats = [
+            {
+                id: 1,
+                name: 'João Silva',
+                avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+                lastMsg: 'Oi, tudo bem?',
+                lastTime: '12:31',
+                status: 'online',
+                messages: [
+                    {from: 'me', text: 'Olá João!', time: '12:30'},
+                    {from: 'him', text: 'Oi, tudo bem?', time: '12:31'},
+                ]
+            },
+            {
+                id: 2,
+                name: 'Maria Souza',
+                avatar: 'https://randomuser.me/api/portraits/women/45.jpg',
+                lastMsg: 'Enviei o documento.',
+                lastTime: '11:15',
+                status: 'visto por último hoje às 11:20',
+                messages: [
+                    {from: 'me', text: 'Bom dia, Maria!', time: '11:10'},
+                    {from: 'her', text: 'Enviei o documento.', time: '11:15'},
+                ]
+            },
+            {
+                id: 3,
+                name: 'Grupo Família',
+                avatar: 'https://i.imgur.com/3VQH2zE.png',
+                lastMsg: 'Vamos almoçar juntos?',
+                lastTime: '10:22',
+                status: 'online',
+                messages: [
+                    {from: 'me', text: 'Bom dia, pessoal!', time: '10:20'},
+                    {from: 'other', text: 'Vamos almoçar juntos?', time: '10:22'},
+                ]
+            }
+        ];
+        let currentChat = null;
+        // Renderizar lista de chats
+        function renderChatList(filter = '') {
+            $('#chatList').empty();
+            chats.forEach(chat => {
+                if (filter && !chat.name.toLowerCase().includes(filter.toLowerCase())) return;
+                const item = $(`
+                    <div class="chat-list-item" data-id="${chat.id}">
+                        <img src="${chat.avatar}" alt="Avatar">
+                        <div class="chat-info">
+                            <div class="chat-name">${chat.name}</div>
+                            <div class="chat-last">${chat.lastMsg}</div>
+                        </div>
+                        <div class="chat-time">${chat.lastTime}</div>
+                    </div>
+                `);
+                if (currentChat && chat.id === currentChat.id) item.addClass('active');
+                $('#chatList').append(item);
+            });
+        }
+        // Renderizar conversa
+        function renderChat(chat) {
+            $('#mainChat').show();
+            $('#chatAvatar').attr('src', chat.avatar);
+            $('#chatTitle').text(chat.name);
+            $('#chatStatus').text(chat.status);
+            $('#chatBody').empty();
+            chat.messages.forEach(msg => {
+                let sender = 'received';
+                if (msg.from === 'me') sender = 'sent';
+                const msgElem = $(`
+                    <div class="message ${sender}">
+                        <span>${msg.text}</span>
+                        <span class="msg-time">${msg.time}</span>
+                    </div>
+                `);
+                $('#chatBody').append(msgElem);
+            });
+            $('#chatBody').scrollTop($('#chatBody')[0].scrollHeight);
+        }
+        // Selecionar chat
+        $('#chatList').on('click', '.chat-list-item', function() {
+            const id = $(this).data('id');
+            currentChat = chats.find(c => c.id === id);
+            $('.chat-list-item').removeClass('active');
+            $(this).addClass('active');
+            renderChat(currentChat);
+            document.getElementById('receiveSound').play();
+        });
+        // Buscar chats
+        $('#searchChats').on('input', function() {
+            renderChatList($(this).val());
+        });
+        // Enviar mensagem
+        $('#sendBtn').on('click', sendMessage);
+        $('#msgInput').on('keypress', function(e) {
+            if (e.which === 13) sendMessage();
+        });
+        function sendMessage() {
+            const text = $('#msgInput').val();
+            if (!text || !currentChat) return;
+            currentChat.messages.push({from: 'me', text, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})});
+            renderChat(currentChat);
+            $('#msgInput').val('');
+            document.getElementById('sendSound').play();
+        }
+        // Anexar arquivo
+        $('#attachBtn').on('click', function() {
+            $('#attachInput').click();
+        });
+        $('#attachInput').on('change', function(e) {
+            if (!currentChat) return;
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                currentChat.messages.push({from: 'me', text: `<i class=\"fas fa-paperclip\"></i> Anexo: ${file.name}`, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})});
+            });
+            renderChat(currentChat);
+            document.getElementById('sendSound').play();
+        });
+        // Emoji (apenas efeito)
+        $('#emojiBtn').on('click', function() {
+            $('#msgInput').val($('#msgInput').val() + '😊').focus();
+        });
+        // Enviar áudio (efeito sonoro)
+        $('#audioBtn').on('click', function() {
+            if (!currentChat) return;
+            currentChat.messages.push({from: 'me', text: '<i class="fas fa-microphone"></i> [Áudio enviado]', time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})});
+            renderChat(currentChat);
+            document.getElementById('audioRecordSound').play();
+        });
+        // Inicialização
+        $(function() {
+            renderChatList();
+        });
+    </script>
+</body>
+</html>

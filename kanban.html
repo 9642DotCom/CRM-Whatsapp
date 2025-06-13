@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funil de Vendas - WhatsApp CRM</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Dragula CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css">
+    <style>
+        .kanban-board {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px 0;
+            min-height: calc(100vh - 180px);
+        }
+        .kanban-column {
+            flex: 0 0 320px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            margin-right: 15px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .kanban-column:last-child {
+            margin-right: 0;
+        }
+        .kanban-column-header {
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e6ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kanban-column-header .badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+        }
+        .kanban-card {
+            background: #fff;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border-left: 3px solid #e0e6ed;
+            cursor: move;
+            transition: all 0.2s;
+        }
+        .kanban-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .kanban-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .kanban-card-title {
+            font-weight: 600;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .kanban-card-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .kanban-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #8492a6;
+        }
+        .kanban-card-tags {
+            display: flex;
+            gap: 5px;
+        }
+        .kanban-card-tag {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            background: #f0f4f8;
+            color: #4a5568;
+        }
+        .kanban-card-due {
+            font-size: 0.7rem;
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        .kanban-card-due.completed {
+            color: #27ae60;
+        }
+        .kanban-add-card {
+            color: #718096;
+            text-align: center;
+            padding: 10px;
+            border: 1px dashed #cbd5e0;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: all 0.2s;
+        }
+        .kanban-add-card:hover {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+        .kanban-column.leads { border-top: 3px solid #3498db; }
+        .kanban-column.contacted { border-top: 3px solid #9b59b6; }
+        .kanban-column.proposal { border-top: 3px solid #f39c12; }
+        .kanban-column.negotiation { border-top: 3px solid #e67e22; }
+        .kanban-column.closed { border-top: 3px solid #2ecc71; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp CRM</span>
+                </a>
+            </div>
+            <nav class="sidebar-menu">
+                <h3>Menu Principal</h3>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#whatsappSubmenu" class="nav-link dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                    <span class="badge bg-primary badge-menu">2</span>
+                </a>
+                <div class="submenu collapse" id="whatsappSubmenu">
+                    <a href="connect-whatsapp.html" class="nav-link">
+                        <i class="fas fa-plug"></i>
+                        <span>Conectar WhatsApp</span>
+                    </a>
+                    <a href="whatsapp-sessions.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Sessões</span>
+                    </a>
+                </div>
+                <a href="conversas.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Conversas</span>
+                    <span class="badge bg-success badge-menu">5</span>
+                </a>
+                <a href="kanban.html" class="nav-link">
+                    <i class="fas fa-tasks"></i>
+                    <span>Funil de Vendas</span>
+                </a>
+                <a href="quick-messages.html" class="nav-link">
+                    <i class="fas fa-bolt"></i>
+                    <span>Mensagens Rápidas</span>
+                </a>
+                <a href="bulk-messages.html" class="nav-link">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Disparo em Massa</span>
+                </a>
+                <a href="extract-contacts.html" class="nav-link">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Extrair Contatos</span>
+                </a>
+                <a href="contacts.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Contatos</span>
+                </a>
+                <a href="agents.html" class="nav-link">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Agentes</span>
+                </a>
+                <h3>Ferramentas</h3>
+                <a href="campaigns.html" class="nav-link">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Campanhas</span>
+                </a>
+                <a href="templates.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Modelos</span>
+                </a>
+                <a href="import-export.html" class="nav-link">
+                    <i class="fas fa-file-import"></i>
+                    <span>Importar/Exportar</span>
+                </a>
+                <h3>Configurações</h3>
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="profile.html" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Meu Perfil</span>
+                </a>
+                <a href="#" class="nav-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="top-navbar">
+                <button class="menu-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="user-menu">
+                    <div class="user-info">
+                        <p class="user-name">João Silva</p>
+                        <p class="user-role">Administrador</p>
+                    </div>
+                    <div class="user-avatar">
+                        <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Kanban Board -->
+            <div class="container-fluid mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Funil de Vendas</h2>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-download me-1"></i> Exportar
+                        </button>
+                        <button class="btn btn-sm btn-primary">
+                            <i class="fas fa-chart-line me-1"></i> Relatórios
+                        </button>
+                    </div>
+                </div>
+
+                <div class="kanban-board" id="kanbanBoard">
+                    <!-- Leads -->
+                    <div class="kanban-column leads">
+                        <div class="kanban-column-header">
+                            <span>Leads <span class="badge bg-primary">8</span></span>
+                            <i class="fas fa-ellipsis-h text-muted"></i>
+                        </div>
+                        <div class="kanban-cards" id="leads">
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">João Silva</h6>
+                                    <img src="https://via.placeholder.com/40" alt="João Silva" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Interessado em plano empresarial</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">WhatsApp</span>
+                                    </div>
+                                    <span class="kanban-card-due">Hoje</span>
+                                </div>
+                            </div>
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">Empresa ABC</h6>
+                                    <img src="https://via.placeholder.com/40/0000ff/ffffff" alt="Empresa ABC" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Solicitou orçamento</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">E-mail</span>
+                                    </div>
+                                    <span class="kanban-card-due">Ontem</span>
+                                </div>
+                            </div>
+                            <div class="kanban-add-card">
+                                <i class="fas fa-plus me-1"></i> Adicionar card
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contatado -->
+                    <div class="kanban-column contacted">
+                        <div class="kanban-column-header">
+                            <span>Contatado <span class="badge bg-purple">5</span></span>
+                            <i class="fas fa-ellipsis-h text-muted"></i>
+                        </div>
+                        <div class="kanban-cards" id="contacted">
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">Maria Oliveira</h6>
+                                    <img src="https://via.placeholder.com/40/ff00ff/ffffff" alt="Maria Oliveira" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Aguardando retorno</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">Ligação</span>
+                                    </div>
+                                    <span class="kanban-card-due">Em 2 dias</span>
+                                </div>
+                            </div>
+                            <div class="kanban-add-card">
+                                <i class="fas fa-plus me-1"></i> Adicionar card
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proposta Enviada -->
+                    <div class="kanban-column proposal">
+                        <div class="kanban-column-header">
+                            <span>Proposta Enviada <span class="badge bg-warning">3</span></span>
+                            <i class="fas fa-ellipsis-h text-muted"></i>
+                        </div>
+                        <div class="kanban-cards" id="proposal">
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">Carlos Eduardo</h6>
+                                    <img src="https://via.placeholder.com/40/00ff00/ffffff" alt="Carlos Eduardo" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Avaliando proposta</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">WhatsApp</span>
+                                    </div>
+                                    <span class="kanban-card-due">Vence em 3 dias</span>
+                                </div>
+                            </div>
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">Tech Solutions</h6>
+                                    <img src="https://via.placeholder.com/40/ff0000/ffffff" alt="Tech Solutions" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Solicitou ajustes</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">E-mail</span>
+                                        <span class="kanban-card-tag">Urgente</span>
+                                    </div>
+                                    <span class="kanban-card-due">Hoje</span>
+                                </div>
+                            </div>
+                            <div class="kanban-add-card">
+                                <i class="fas fa-plus me-1"></i> Adicionar card
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Negociação -->
+                    <div class="kanban-column negotiation">
+                        <div class="kanban-column-header">
+                            <span>Em Negociação <span class="badge bg-orange">2</span></span>
+                            <i class="fas fa-ellipsis-h text-muted"></i>
+                        </div>
+                        <div class="kanban-cards" id="negotiation">
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">Inovação Digital</h6>
+                                    <img src="https://via.placeholder.com/40/ffff00/000000" alt="Inovação Digital" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Aguardando aprovação do financeiro</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">Reunião</span>
+                                    </div>
+                                    <span class="kanban-card-due">Segunda-feira</span>
+                                </div>
+                            </div>
+                            <div class="kanban-add-card">
+                                <i class="fas fa-plus me-1"></i> Adicionar card
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fechado -->
+                    <div class="kanban-column closed">
+                        <div class="kanban-column-header">
+                            <span>Fechado <span class="badge bg-success">5</span></span>
+                            <i class="fas fa-ellipsis-h text-muted"></i>
+                        </div>
+                        <div class="kanban-cards" id="closed">
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">Global Tech</h6>
+                                    <img src="https://via.placeholder.com/40/00ffff/000000" alt="Global Tech" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Contrato assinado</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">Plano Empresarial</span>
+                                    </div>
+                                    <span class="kanban-card-due completed">R$ 5.200/mês</span>
+                                </div>
+                            </div>
+                            <div class="kanban-card">
+                                <div class="kanban-card-header">
+                                    <h6 class="kanban-card-title">Ana Beatriz</h6>
+                                    <img src="https://via.placeholder.com/40/ff00ff/ffffff" alt="Ana Beatriz" class="kanban-card-avatar">
+                                </div>
+                                <p class="mb-2 small text-muted">Onboarding concluído</p>
+                                <div class="kanban-card-footer">
+                                    <div class="kanban-card-tags">
+                                        <span class="kanban-card-tag">Plano Básico</span>
+                                    </div>
+                                    <span class="kanban-card-due completed">R$ 99/mês</span>
+                                </div>
+                            </div>
+                            <div class="kanban-add-card">
+                                <i class="fas fa-plus me-1"></i> Adicionar card
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Dragula JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/script.js"></script>
+    <script>
+        // Initialize drag and drop
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize dragula
+            dragula([
+                document.getElementById('leads'),
+                document.getElementById('contacted'),
+                document.getElementById('proposal'),
+                document.getElementById('negotiation'),
+                document.getElementById('closed')
+            ]);
+
+            // Add new card
+            document.querySelectorAll('.kanban-add-card').forEach(button => {
+                button.addEventListener('click', function() {
+                    const column = this.parentElement;
+                    const newCard = document.createElement('div');
+                    newCard.className = 'kanban-card';
+                    newCard.innerHTML = `
+                        <div class="kanban-card-header">
+                            <h6 class="kanban-card-title">Novo Lead</h6>
+                            <img src="https://via.placeholder.com/40" alt="Novo Lead" class="kanban-card-avatar">
+                        </div>
+                        <p class="mb-2 small text-muted">Clique para editar os detalhes</p>
+                        <div class="kanban-card-footer">
+                            <div class="kanban-card-tags">
+                                <span class="kanban-card-tag">Novo</span>
+                            </div>
+                            <span class="kanban-card-due">Hoje</span>
+                        </div>
+                    `;
+                    column.insertBefore(newCard, this);
+                    
+                    // Make card editable
+                    makeCardEditable(newCard);
+                });
+            });
+
+            // Make existing cards editable
+            document.querySelectorAll('.kanban-card').forEach(card => {
+                makeCardEditable(card);
+            });
+
+            function makeCardEditable(card) {
+                card.addEventListener('dblclick', function() {
+                    // In a real app, this would open a modal or form to edit the card
+                    alert('Abrir formulário de edição do lead');
+                });
+            }
+        });
+    </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Menu Manager (se existir) -->
+    <script src="js/menu-manager.js"></script>
+    <script>
+        // Inicialização do menu responsivo (igual index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+                });
+            }
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('show');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

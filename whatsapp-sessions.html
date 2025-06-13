@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sessões do WhatsApp - CRM</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .session-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            background: #fff;
+            margin-bottom: 24px;
+            padding: 24px;
+            position: relative;
+        }
+        .session-status {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+        }
+        .session-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #25D366;
+        }
+        .session-actions button {
+            margin-right: 8px;
+        }
+        .session-metrics {
+            margin-top: 16px;
+        }
+        .metric {
+            display: inline-block;
+            min-width: 120px;
+            margin-right: 24px;
+            text-align: center;
+        }
+        .metric-title {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .metric-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .story-btn {
+            background: #25D366;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-weight: 600;
+        }
+        .story-btn:hover {
+            background: #128C7E;
+        }
+        .search-bar {
+            max-width: 350px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="sidebar-brand">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp CRM</span>
+                </a>
+            </div>
+            <nav class="sidebar-menu">
+                <h3>Menu Principal</h3>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#whatsappSubmenu" class="nav-link dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                    <span class="badge bg-primary badge-menu">2</span>
+                </a>
+                <div class="submenu collapse" id="whatsappSubmenu">
+                    <a href="connect-whatsapp.html" class="nav-link">
+                        <i class="fas fa-plug"></i>
+                        <span>Conectar WhatsApp</span>
+                    </a>
+                    <a href="whatsapp-sessions.html" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Sessões</span>
+                    </a>
+                </div>
+                <a href="conversas.html" class="nav-link">
+                    <i class="fas fa-comments"></i>
+                    <span>Conversas</span>
+                    <span class="badge bg-success badge-menu">5</span>
+                </a>
+                <a href="kanban.html" class="nav-link">
+                    <i class="fas fa-tasks"></i>
+                    <span>Funil de Vendas</span>
+                </a>
+                <a href="quick-messages.html" class="nav-link">
+                    <i class="fas fa-bolt"></i>
+                    <span>Mensagens Rápidas</span>
+                </a>
+                <a href="bulk-messages.html" class="nav-link">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Disparo em Massa</span>
+                </a>
+                <a href="extract-contacts.html" class="nav-link">
+                    <i class="fas fa-search-plus"></i>
+                    <span>Extrair Contatos</span>
+                </a>
+                <a href="contacts.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Contatos</span>
+                </a>
+                <a href="agents.html" class="nav-link">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Agentes</span>
+                </a>
+                <h3>Ferramentas</h3>
+                <a href="campaigns.html" class="nav-link">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Campanhas</span>
+                </a>
+                <a href="templates.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Modelos</span>
+                </a>
+                <a href="import-export.html" class="nav-link">
+                    <i class="fas fa-file-import"></i>
+                    <span>Importar/Exportar</span>
+                </a>
+                <h3>Configurações</h3>
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+                <a href="profile.html" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>Meu Perfil</span>
+                </a>
+                <a href="#" class="nav-link" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </nav>
+        </div>
+        <nav class="top-navbar">
+            <button class="menu-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-menu">
+                <div class="user-info">
+                    <p class="user-name">João Silva</p>
+                    <p class="user-role">Administrador</p>
+                </div>
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+                </div>
+            </div>
+        </nav>
+            <div class="sidebar-header">
+                <h3>WhatsApp CRM</h3>
+            </div>
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+                <li class="active">
+                    <a href="#whatsappSubmenu" data-bs-toggle="collapse" aria-expanded="true" class="dropdown-toggle">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <ul class="collapse show list-unstyled" id="whatsappSubmenu">
+                        <li><a href="connect-whatsapp.html">Conectar WhatsApp</a></li>
+                        <li class="active"><a href="whatsapp-sessions.html">Sessões</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="conversations.html"><i class="fas fa-comments"></i> Conversas</a>
+                </li>
+                <li>
+                    <a href="kanban.html"><i class="fas fa-tasks"></i> Funil de Vendas</a>
+                </li>
+                <li>
+                    <a href="quick-messages.html" class="d-flex align-items-center py-2 px-2 rounded">
+                        <i class="fas fa-bolt me-2"></i> Mensagens Rápidas
+                    </a>
+                </li>
+                <li>
+                    <a href="bulk-messages.html" class="d-flex align-items-center py-2 px-2 rounded">
+                        <i class="fas fa-paper-plane me-2"></i> Mensagens em Massa
+                    </a>
+                </li>
+                <li>
+                    <a href="agents.html"><i class="fas fa-user-tie"></i> Agentes</a>
+                </li>
+                <li>
+                    <a href="contacts.html"><i class="fas fa-users"></i> Contatos</a>
+                </li>
+                <li>
+                    <a href="settings.html"><i class="fas fa-cog"></i> Configurações</a>
+                </li>
+            </ul>
+        </nav>
+        <!-- Page Content -->
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="ms-auto d-flex align-items-center">
+                        <input type="text" class="form-control search-bar me-3" placeholder="Buscar sessão, número ou nome...">
+                        <a href="connect-whatsapp.html" class="btn btn-success">
+                            <i class="fas fa-plus me-1"></i> Nova Sessão
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Modals for actions -->
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Sessão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="editSessionForm">
+                      <div class="mb-3">
+                        <label for="editSessionName" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="editSessionName" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="editSessionNumber" class="form-label">Número</label>
+                        <input type="text" class="form-control" id="editSessionNumber" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="editSessionAvatar" class="form-label">Avatar (URL)</label>
+                        <input type="text" class="form-control" id="editSessionAvatar">
+                      </div>
+                      <button type="submit" class="btn btn-primary">Salvar</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Excluir Sessão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja excluir esta sessão?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Disconnect Modal -->
+            <div class="modal fade" id="disconnectModal" tabindex="-1" aria-labelledby="disconnectModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="disconnectModalLabel">Desconectar Sessão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                  </div>
+                  <div class="modal-body">
+                    Tem certeza que deseja desconectar esta sessão?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" id="confirmDisconnectBtn">Desconectar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Post Story Modal -->
+            <div class="modal fade" id="storyModal" tabindex="-1" aria-labelledby="storyModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="storyModalLabel">Postar Story</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="storyForm">
+                      <div class="mb-3">
+                        <label for="storyText" class="form-label">Texto do Story</label>
+                        <textarea class="form-control" id="storyText" rows="2"></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <label for="storyMedia" class="form-label">Mídia (imagem/vídeo)</label>
+                        <input type="file" class="form-control" id="storyMedia" accept="image/*,video/*">
+                      </div>
+                      <button type="submit" class="btn btn-success">Postar</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="container-fluid py-4">
+                <h2 class="mb-4">Sessões do WhatsApp</h2>
+                <!-- Example session cards -->
+                <div class="row" id="sessionsList">
+                    <!-- Session Card Example -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="session-card">
+                            <div class="session-status">
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Avatar" class="session-avatar me-3">
+                                <div>
+                                    <h5 class="mb-1">Atendimento (11 91234-5678)</h5>
+                                    <div class="text-muted">Conectado há 2h</div>
+                                </div>
+                            </div>
+                            <div class="session-metrics mt-3">
+                                <div class="metric">
+                                    <div class="metric-title">Mensagens</div>
+                                    <div class="metric-value">1.245</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-title">Contatos</div>
+                                    <div class="metric-value">320</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-title">Grupos</div>
+                                    <div class="metric-value">15</div>
+                                </div>
+                            </div>
+                            <div class="session-metrics mt-2">
+                                <div class="metric">
+                                    <div class="metric-title">Tempo Resp.</div>
+                                    <div class="metric-value">2min</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-title">Satisfação</div>
+                                    <div class="metric-value">4.8 <i class="fas fa-star text-warning"></i></div>
+                                </div>
+                            </div>
+                            <div class="session-actions mt-4">
+                                <button class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Editar</button>
+                                <button class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Excluir</button>
+                                <button class="btn btn-outline-secondary btn-sm"><i class="fas fa-sign-out-alt me-1"></i>Desconectar</button>
+                                <button class="story-btn btn-sm"><i class="fas fa-plus me-1"></i>Postar Story</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add more session cards as needed -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="session-card">
+                            <div class="session-status">
+                                <span class="badge bg-secondary">Offline</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="Avatar" class="session-avatar me-3">
+                                <div>
+                                    <h5 class="mb-1">Suporte (21 98765-4321)</h5>
+                                    <div class="text-muted">Desconectado há 10min</div>
+                                </div>
+                            </div>
+                            <div class="session-metrics mt-3">
+                                <div class="metric">
+                                    <div class="metric-title">Mensagens</div>
+                                    <div class="metric-value">980</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-title">Contatos</div>
+                                    <div class="metric-value">210</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-title">Grupos</div>
+                                    <div class="metric-value">8</div>
+                                </div>
+                            </div>
+                            <div class="session-metrics mt-2">
+                                <div class="metric">
+                                    <div class="metric-title">Tempo Resp.</div>
+                                    <div class="metric-value">5min</div>
+                                </div>
+                                <div class="metric">
+                                    <div class="metric-title">Satisfação</div>
+                                    <div class="metric-value">4.2 <i class="fas fa-star text-warning"></i></div>
+                                </div>
+                            </div>
+                            <div class="session-actions mt-4">
+                                <button class="btn btn-outline-primary btn-sm"><i class="fas fa-edit me-1"></i>Editar</button>
+                                <button class="btn btn-outline-danger btn-sm"><i class="fas fa-trash me-1"></i>Excluir</button>
+                                <button class="btn btn-outline-secondary btn-sm"><i class="fas fa-sign-out-alt me-1"></i>Desconectar</button>
+                                <button class="story-btn btn-sm"><i class="fas fa-plus me-1"></i>Postar Story</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End session cards -->
+            </div>
+        </div>
+    </div>
+    <!-- jQuery, Popper.js, Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Sidebar toggle
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar, #content').toggleClass('active');
+        });
+        // Search filter (static demo)
+        $('.search-bar').on('input', function() {
+            var value = $(this).val().toLowerCase();
+            $('#sessionsList .session-card').parent().each(function() {
+                var cardText = $(this).text().toLowerCase();
+                $(this).toggle(cardText.indexOf(value) > -1);
+            });
+        });
+        // --- Modal Actions ---
+        let selectedCard = null;
+
+        // Edit
+        $('.session-actions .btn-outline-primary').on('click', function() {
+            selectedCard = $(this).closest('.session-card');
+            const name = selectedCard.find('h5').text().split(' (')[0];
+            const number = selectedCard.find('h5').text().split('(')[1].replace(')','');
+            const avatar = selectedCard.find('img.session-avatar').attr('src');
+            $('#editSessionName').val(name);
+            $('#editSessionNumber').val(number);
+            $('#editSessionAvatar').val(avatar);
+            $('#editModal').modal('show');
+        });
+        $('#editSessionForm').on('submit', function(e) {
+            e.preventDefault();
+            if (!selectedCard) return;
+            selectedCard.find('h5').html(
+                $('#editSessionName').val() + ' (' + $('#editSessionNumber').val() + ')'
+            );
+            selectedCard.find('img.session-avatar').attr('src', $('#editSessionAvatar').val());
+            $('#editModal').modal('hide');
+        });
+
+        // Delete
+        $('.session-actions .btn-outline-danger').on('click', function() {
+            selectedCard = $(this).closest('.session-card');
+            $('#deleteModal').modal('show');
+        });
+        $('#confirmDeleteBtn').on('click', function() {
+            if (selectedCard) selectedCard.parent().remove();
+            $('#deleteModal').modal('hide');
+        });
+
+        // Disconnect
+        $('.session-actions .btn-outline-secondary').on('click', function() {
+            selectedCard = $(this).closest('.session-card');
+            $('#disconnectModal').modal('show');
+        });
+        $('#confirmDisconnectBtn').on('click', function() {
+            if (selectedCard) {
+                selectedCard.find('.session-status .badge').removeClass('bg-success').addClass('bg-secondary').text('Offline');
+                selectedCard.find('.text-muted').text('Desconectado agora');
+            }
+            $('#disconnectModal').modal('hide');
+        });
+
+        // Post Story
+        $('.story-btn').on('click', function() {
+            selectedCard = $(this).closest('.session-card');
+            $('#storyText').val('');
+            $('#storyMedia').val('');
+            $('#storyModal').modal('show');
+        });
+        $('#storyForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#storyModal').modal('hide');
+            alert('Story postado para esta sessão! (Apenas demonstração visual)');
+        });
+    </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Menu Manager (se existir) -->
+    <script src="js/menu-manager.js"></script>
+    <script>
+        // Inicialização do menu responsivo (igual index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+                });
+            }
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('show');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

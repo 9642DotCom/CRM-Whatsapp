@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens Rápidas - WhatsApp CRM</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background: #ece5dd; }
+        .quick-msg-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+            padding: 1.2rem;
+        }
+        .quick-msg-media {
+            max-width: 100px;
+            max-height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+        .shortcut-badge {
+            background: #25d366;
+            color: #fff;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            padding: 2px 8px;
+            margin-left: 8px;
+        }
+        .quick-msg-actions .btn {
+            margin-right: 8px;
+        }
+        .quick-msg-list {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        .modal-lg { max-width: 600px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp CRM</span>
+            </a>
+        </div>
+        <nav class="sidebar-menu">
+            <h3>Menu Principal</h3>
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#whatsappSubmenu" class="nav-link dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp</span>
+                <span class="badge bg-primary badge-menu">2</span>
+            </a>
+            <div class="submenu collapse" id="whatsappSubmenu">
+                <a href="connect-whatsapp.html" class="nav-link">
+                    <i class="fas fa-plug"></i>
+                    <span>Conectar WhatsApp</span>
+                </a>
+                <a href="whatsapp-sessions.html" class="nav-link">
+                    <i class="fas fa-list"></i>
+                    <span>Sessões</span>
+                </a>
+            </div>
+            <a href="conversas.html" class="nav-link">
+                <i class="fas fa-comments"></i>
+                <span>Conversas</span>
+                <span class="badge bg-success badge-menu">5</span>
+            </a>
+            <a href="kanban.html" class="nav-link">
+                <i class="fas fa-tasks"></i>
+                <span>Funil de Vendas</span>
+            </a>
+            <a href="quick-messages.html" class="nav-link">
+                <i class="fas fa-bolt"></i>
+                <span>Mensagens Rápidas</span>
+            </a>
+            <a href="bulk-messages.html" class="nav-link">
+                <i class="fas fa-paper-plane"></i>
+                <span>Disparo em Massa</span>
+            </a>
+            <a href="extract-contacts.html" class="nav-link">
+                <i class="fas fa-search-plus"></i>
+                <span>Extrair Contatos</span>
+            </a>
+            <a href="contacts.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Contatos</span>
+            </a>
+            <a href="agents.html" class="nav-link">
+                <i class="fas fa-user-tie"></i>
+                <span>Agentes</span>
+            </a>
+            <h3>Ferramentas</h3>
+            <a href="campaigns.html" class="nav-link">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campanhas</span>
+            </a>
+            <a href="templates.html" class="nav-link">
+                <i class="fas fa-file-alt"></i>
+                <span>Modelos</span>
+            </a>
+            <a href="import-export.html" class="nav-link">
+                <i class="fas fa-file-import"></i>
+                <span>Importar/Exportar</span>
+            </a>
+            <h3>Configurações</h3>
+            <a href="settings.html" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+            <a href="profile.html" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Meu Perfil</span>
+            </a>
+            <a href="#" class="nav-link" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </nav>
+    </div>
+    <nav class="top-navbar">
+        <button class="menu-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="user-menu">
+            <div class="user-info">
+                <p class="user-name">João Silva</p>
+                <p class="user-role">Administrador</p>
+            </div>
+            <div class="user-avatar">
+                <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="quick-msg-list" id="quickMsgList">
+            <!-- Mensagens rápidas renderizadas aqui -->
+        </div>
+    </div>
+
+    <!-- Modal Nova/Editar Mensagem Rápida -->
+    <div class="modal fade" id="quickMsgModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="quickMsgModalLabel">Nova Mensagem Rápida</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <form id="quickMsgForm">
+              <div class="mb-3">
+  <label for="quickMsgText" class="form-label">Mensagem</label>
+  <div class="input-group mb-2">
+    <textarea class="form-control" id="quickMsgText" rows="2" required></textarea>
+    <button class="btn btn-outline-primary" type="button" id="openIaGenBtn" title="Gerar texto com IA"><i class="fas fa-robot"></i> Gerar com IA</button>
+  </div>
+  <div id="iaGenBox" style="display:none;">
+    <div class="input-group mb-2">
+      <input type="text" class="form-control" id="iaPrompt" placeholder="Descreva o que deseja...">
+      <button class="btn btn-success" type="button" id="genIaBtn">Gerar</button>
+      <button class="btn btn-link text-danger" type="button" id="closeIaGenBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="iaGenLoading" class="text-muted small" style="display:none;"><i class="fas fa-spinner fa-spin"></i> Gerando sugestão...</div>
+  </div>
+</div>
+              <div class="mb-3">
+  <label class="form-label">Mídia (opcional)</label>
+  <div class="input-group mb-2">
+    <input type="file" id="quickMsgMedia" class="form-control" accept="image/*,audio/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx">
+    <button class="btn btn-outline-secondary" type="button" id="recordAudioBtn" title="Gravar áudio"><i class="fas fa-microphone"></i></button>
+  </div>
+  <div id="audioRecorderBox" style="display:none;">
+    <div class="mb-2">
+      <button class="btn btn-danger btn-sm" id="startRecBtn"><i class="fas fa-circle"></i> Gravar</button>
+      <button class="btn btn-secondary btn-sm" id="stopRecBtn" disabled><i class="fas fa-stop"></i> Parar</button>
+      <button class="btn btn-link text-danger btn-sm" id="closeRecBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="audioRecStatus" class="text-muted small mb-1">Pronto para gravar...</div>
+    <audio id="audioPreview" controls style="display:none;"></audio>
+    <button class="btn btn-outline-danger btn-sm mt-2" id="removeAudioBtn" style="display:none;"><i class="fas fa-trash"></i> Remover áudio</button>
+  </div>
+  <div id="quickMsgMediaPreview" class="mt-2"></div>
+</div>
+              <div class="mb-3">
+                <label for="quickMsgShortcut" class="form-label">Atalho (ex: /saudacao)</label>
+                <input type="text" class="form-control" id="quickMsgShortcut" maxlength="20">
+              </div>
+              <input type="hidden" id="quickMsgEditId">
+              <button type="submit" class="btn btn-success">Salvar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Mensagens rápidas em memória (demo local)
+    let quickMsgs = [];
+    let editIndex = null;
+
+    // Gravação de áudio
+    let audioBlob = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    document.addEventListener('DOMContentLoaded', function() {
+      // Botões e elementos
+      const recordBtn = document.getElementById('recordAudioBtn');
+      const recBox = document.getElementById('audioRecorderBox');
+      const startBtn = document.getElementById('startRecBtn');
+      const stopBtn = document.getElementById('stopRecBtn');
+      const closeRecBtn = document.getElementById('closeRecBtn');
+      const statusTxt = document.getElementById('audioRecStatus');
+      const audioPreview = document.getElementById('audioPreview');
+      const removeAudioBtn = document.getElementById('removeAudioBtn');
+      const quickMsgMedia = document.getElementById('quickMsgMedia');
+      // Abrir box de gravação
+      if(recordBtn) recordBtn.onclick = ()=>{
+        recBox.style.display = 'block';
+        statusTxt.innerText = 'Clique em Gravar para começar a gravar...';
+        audioPreview.style.display = 'none';
+        removeAudioBtn.style.display = 'none';
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      };
+      // Fechar box
+      if(closeRecBtn) closeRecBtn.onclick = ()=>{ recBox.style.display = 'none'; };
+      // Iniciar gravação
+      if(startBtn) startBtn.onclick = async ()=>{
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          statusTxt.innerText = 'Seu navegador não suporta gravação de áudio.';
+          return;
+        }
+        
+        // Solicitar permissão do microfone
+        try {
+          statusTxt.innerText = 'Solicitando permissão do microfone...';
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          
+          // Se chegou aqui, a permissão foi concedida
+          audioChunks = [];
+          mediaRecorder = new MediaRecorder(stream);
+          
+          mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) {
+              audioChunks.push(e.data);
+            }
+          };
+          
+          mediaRecorder.onstop = e => {
+            audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            audioPreview.src = URL.createObjectURL(audioBlob);
+            audioPreview.style.display = 'block';
+            removeAudioBtn.style.display = 'inline-block';
+            statusTxt.innerText = 'Áudio gravado. Você pode ouvir, remover ou gravar novamente.';
+            
+            // Encerrar o stream de mídia quando terminar
+            stream.getTracks().forEach(track => track.stop());
+          };
+          
+          mediaRecorder.onerror = e => {
+            console.error('Erro na gravação:', e);
+            statusTxt.innerText = 'Erro ao gravar áudio. Tente novamente.';
+            stream.getTracks().forEach(track => track.stop());
+          };
+          
+          // Iniciar gravação
+          mediaRecorder.start();
+          statusTxt.innerText = 'Gravando... (Clique em Parar quando terminar)';
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+          
+        } catch(err) {
+          console.error('Erro ao acessar microfone:', err);
+          if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+            statusTxt.innerText = 'Permissão do microfone negada. Por favor, permita o acesso ao microfone nas configurações do seu navegador.';
+          } else {
+            statusTxt.innerText = 'Erro ao acessar o microfone: ' + err.message;
+          }
+          startBtn.disabled = false;
+        }
+      };
+      // Parar gravação
+      if(stopBtn) stopBtn.onclick = ()=>{
+        if(mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+        }
+      };
+      // Remover áudio
+      if(removeAudioBtn) removeAudioBtn.onclick = ()=>{
+        audioBlob = null;
+        audioPreview.src = '';
+        audioPreview.style.display = 'none';
+        removeAudioBtn.style.display = 'none';
+        statusTxt.innerText = 'Clique em Gravar para começar uma nova gravação...';
+      };
+
+    // IA Geração de texto (simulado)
+
+      const openBtn = document.getElementById('openIaGenBtn');
+      const closeIaGenBtn = document.getElementById('closeIaGenBtn');
+      const iaBox = document.getElementById('iaGenBox');
+      const genBtn = document.getElementById('genIaBtn');
+      const loading = document.getElementById('iaGenLoading');
+      const promptInput = document.getElementById('iaPrompt');
+      const msgTextarea = document.getElementById('quickMsgText');
+      if(openBtn) openBtn.onclick = ()=>{ iaBox.style.display = 'block'; promptInput.focus(); };
+      if(closeIaGenBtn) closeIaGenBtn.onclick = ()=>{ iaBox.style.display = 'none'; };
+      if(genBtn) genBtn.onclick = ()=>{
+        const prompt = promptInput.value.trim();
+        if(!prompt) { promptInput.focus(); return; }
+        loading.style.display = 'inline-block';
+        genBtn.disabled = true;
+        setTimeout(()=>{
+          // Simulação de IA
+          msgTextarea.value = 'Sugestão IA: ' + prompt.charAt(0).toUpperCase() + prompt.slice(1) + '...';
+          loading.style.display = 'none';
+          iaBox.style.display = 'none';
+          genBtn.disabled = false;
+        }, 1200);
+      };
+    });
+
+    function renderQuickMsgs() {
+      const list = document.getElementById('quickMsgList');
+      list.innerHTML = '';
+      if (quickMsgs.length === 0) {
+        list.innerHTML = '<div class="text-center text-muted my-5">Nenhuma mensagem rápida cadastrada.</div>';
+        return;
+      }
+      quickMsgs.forEach((msg, idx) => {
+        let mediaHtml = '';
+        if (msg.media && msg.mediaType) {
+          if (msg.mediaType.startsWith('image/')) {
+            mediaHtml = `<img src="${msg.media}" class="quick-msg-media" alt="Imagem">`;
+          } else if (msg.mediaType.startsWith('audio/')) {
+            mediaHtml = `<audio controls class="quick-msg-media"><source src="${msg.media}" type="${msg.mediaType}"></audio>`;
+          } else if (msg.mediaType.startsWith('video/')) {
+            mediaHtml = `<video controls class="quick-msg-media"><source src="${msg.media}" type="${msg.mediaType}"></video>`;
+          } else {
+            mediaHtml = `<a href="${msg.media}" target="_blank" class="btn btn-outline-secondary btn-sm">Arquivo</a>`;
+          }
+        }
+        list.innerHTML += `
+          <div class="quick-msg-card d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              ${mediaHtml}
+              <div>
+                <div class="fw-bold mb-1">${msg.text}</div>
+                ${msg.shortcut ? `<span class="shortcut-badge">${msg.shortcut}</span>` : ''}
+              </div>
+            </div>
+            <div class="quick-msg-actions">
+              <button class="btn btn-outline-primary btn-sm me-1" onclick="editQuickMsg(${idx})"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-outline-danger btn-sm" onclick="deleteQuickMsg(${idx})"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>`;
+      });
+    }
+
+    function resetQuickMsgForm() {
+      document.getElementById('quickMsgForm').reset();
+      document.getElementById('quickMsgMediaPreview').innerHTML = '';
+      document.getElementById('quickMsgEditId').value = '';
+      editIndex = null;
+    }
+
+    document.getElementById('addQuickMsgBtn').addEventListener('click', function() {
+      resetQuickMsgForm();
+      document.getElementById('quickMsgModalLabel').innerText = 'Nova Mensagem Rápida';
+      var modal = new bootstrap.Modal(document.getElementById('quickMsgModal'));
+      modal.show();
+    });
+
+    document.getElementById('quickMsgForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const text = document.getElementById('quickMsgText').value.trim();
+      const shortcut = document.getElementById('quickMsgShortcut').value.trim();
+      const editId = document.getElementById('quickMsgEditId').value;
+      let media = '', mediaType = '';
+      const fileInput = document.getElementById('quickMsgMedia');
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        mediaType = file.type;
+        media = URL.createObjectURL(file);
+      } else if (editId) {
+        // Mantém mídia se não alterada na edição
+        media = quickMsgs[editId].media;
+        mediaType = quickMsgs[editId].mediaType;
+      }
+      const msgObj = { text, shortcut, media, mediaType };
+      if (editId !== '') {
+        quickMsgs[editId] = msgObj;
+      } else {
+        quickMsgs.push(msgObj);
+      }
+      renderQuickMsgs();
+      bootstrap.Modal.getInstance(document.getElementById('quickMsgModal')).hide();
+    });
+
+    function editQuickMsg(idx) {
+      const msg = quickMsgs[idx];
+      document.getElementById('quickMsgText').value = msg.text;
+      document.getElementById('quickMsgShortcut').value = msg.shortcut || '';
+      document.getElementById('quickMsgEditId').value = idx;
+      let preview = '';
+      if (msg.media && msg.mediaType) {
+        if (msg.mediaType.startsWith('image/')) {
+          preview = `<img src="${msg.media}" class="quick-msg-media" alt="Imagem">`;
+        } else if (msg.mediaType.startsWith('audio/')) {
+          preview = `<audio controls class="quick-msg-media"><source src="${msg.media}" type="${msg.mediaType}"></audio>`;
+        } else if (msg.mediaType.startsWith('video/')) {
+          preview = `<video controls class="quick-msg-media"><source src="${msg.media}" type="${msg.mediaType}"></video>`;
+        } else {
+          preview = `<a href="${msg.media}" target="_blank" class="btn btn-outline-secondary btn-sm">Arquivo</a>`;
+        }
+      }
+      document.getElementById('quickMsgMediaPreview').innerHTML = preview;
+      document.getElementById('quickMsgMedia').value = '';
+      document.getElementById('quickMsgModalLabel').innerText = 'Editar Mensagem Rápida';
+      var modal = new bootstrap.Modal(document.getElementById('quickMsgModal'));
+      modal.show();
+      editIndex = idx;
+    }
+    window.editQuickMsg = editQuickMsg;
+
+    function deleteQuickMsg(idx) {
+      if (confirm('Deseja realmente excluir esta mensagem rápida?')) {
+        quickMsgs.splice(idx, 1);
+        renderQuickMsgs();
+      }
+    }
+    window.deleteQuickMsg = deleteQuickMsg;
+
+    document.getElementById('quickMsgMedia').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      let preview = '';
+      if (file) {
+        if (file.type.startsWith('image/')) {
+          preview = `<img src="${URL.createObjectURL(file)}" class="quick-msg-media" alt="Imagem">`;
+        } else if (file.type.startsWith('audio/')) {
+          preview = `<audio controls class="quick-msg-media"><source src="${URL.createObjectURL(file)}" type="${file.type}"></audio>`;
+        } else if (file.type.startsWith('video/')) {
+          preview = `<video controls class="quick-msg-media"><source src="${URL.createObjectURL(file)}" type="${file.type}"></video>`;
+        } else {
+          preview = `<span class='text-muted'>Arquivo selecionado</span>`;
+        }
+      }
+      document.getElementById('quickMsgMediaPreview').innerHTML = preview;
+    });
+
+    // Render inicial
+    renderQuickMsgs();
+    </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Menu Manager (se existir) -->
+    <script src="js/menu-manager.js"></script>
+    <script>
+        // Inicialização do menu responsivo (igual index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+                });
+            }
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('show');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

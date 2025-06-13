@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Agentes - WhatsApp CRM</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/agents.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <style>
+        .agent-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #6c757d;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .status-online { background-color: #28a745; }
+        .status-offline { background-color: #dc3545; }
+        .status-away { background-color: #ffc107; }
+        .whatsapp-badge {
+            background-color: #25D366;
+            color: white;
+        }
+        .table-hover tbody tr { cursor: pointer; }
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+            display: flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0 bg-light min-vh-100">
+        <!-- Navbar -->
+        <nav class="top-navbar">
+            <button class="menu-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-menu">
+                <div class="user-info">
+                    <p class="user-name">João Silva</p>
+                    <p class="user-role">Administrador</p>
+                </div>
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+                </div>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">WhatsApp CRM</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="whatsapp-sessions.html">Sessões</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contacts.html">Contatos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="agents.html">Agentes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="quick-messages.html">Mensagens Rápidas</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                            <i class="ri-user-line me-1"></i> Admin
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="ri-settings-line me-2"></i>Configurações</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="ri-logout-box-line me-2"></i>Sair</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="container-fluid p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center">
+                    <h2 class="mb-0 me-3"><i class="ri-team-line me-2"></i>Gerenciar Agentes</h2>
+                    <a href="quick-messages.html" class="btn btn-outline-primary btn-sm me-2" title="Mensagens Rápidas">
+                        <i class="fas fa-comment-alt me-1"></i> Mensagens Rápidas
+                    </a>
+                    <a href="bulk-messages.html" class="btn btn-outline-primary btn-sm me-2" title="Mensagens em Massa">
+                        <i class="fas fa-paper-plane me-1"></i> Mensagens em Massa
+                    </a>
+                </div>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAgentModal">
+                    <i class="ri-user-add-line me-1"></i> Adicionar Agente
+                </button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="searchAgent" class="form-label">Buscar Agente</label>
+                            <input type="text" class="form-control" id="searchAgent" placeholder="Nome ou e-mail do agente">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="filterStatus" class="form-label">Status</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Todos</option>
+                                <option value="online">Online</option>
+                                <option value="offline">Offline</option>
+                                <option value="away">Ausente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="filterWhatsApp" class="form-label">WhatsApp</label>
+                            <select class="form-select" id="filterWhatsApp">
+                                <option value="">Todos</option>
+                                <option value="whatsapp1">(11) 99999-1111</option>
+                                <option value="whatsapp2">(11) 99999-2222</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-outline-secondary w-100" id="btnFilter">
+                                <i class="ri-filter-line me-1"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Agentes -->
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 50px;"></th>
+                                    <th>Nome</th>
+                                    <th>E-mail</th>
+                                    <th>Status</th>
+                                    <th>WhatsApps</th>
+                                    <th>Atendimentos</th>
+                                    <th>Avaliação</th>
+                                    <th style="width: 100px;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agentsList">
+                                <!-- Lista de agentes será preenchida via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Adicionar/Editar Agente -->
+    <div class="modal fade" id="addAgentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="agentModalTitle">Adicionar Novo Agente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <form id="agentForm">
+                    <div class="modal-body">
+                        <input type="hidden" id="agentId">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="agentName" class="form-label">Nome Completo <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="agentName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="agentEmail" class="form-label">E-mail <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="agentEmail" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="agentPhone" class="form-label">Telefone</label>
+                                <input type="tel" class="form-control" id="agentPhone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="agentStatus" class="form-label">Status</label>
+                                <select class="form-select" id="agentStatus">
+                                    <option value="online">Online</option>
+                                    <option value="offline">Offline</option>
+                                    <option value="away">Ausente</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="agentWhatsApps" class="form-label">WhatsApps Vinculados</label>
+                                <select class="form-select" id="agentWhatsApps" multiple>
+                                    <option value="whatsapp1">(11) 99999-1111</option>
+                                    <option value="whatsapp2">(11) 99999-2222</option>
+                                    <option value="whatsapp3">(11) 99999-3333</option>
+                                </select>
+                                <div class="form-text">Selecione os números de WhatsApp que este agente atenderá</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="agentIsAdmin" role="switch">
+                                    <label class="form-check-label" for="agentIsAdmin">É administrador</label>
+                                </div>
+                                <div class="form-text">Administradores têm acesso completo ao sistema</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Visualizar Agente -->
+    <div class="modal fade" id="viewAgentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Agente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <div class="agent-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            <span id="agentAvatar">JD</span>
+                        </div>
+                        <h4 id="agentFullName">João da Silva</h4>
+                        <div class="d-flex justify-content-center align-items-center mb-2">
+                            <span class="status-indicator status-online me-2"></span>
+                            <span id="agentStatusBadge" class="badge bg-success">Online</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">Informações de Contato</h6>
+                        <p class="mb-1"><i class="ri-mail-line me-2"></i> <span id="agentViewEmail">joao@exemplo.com</span></p>
+                        <p class="mb-0"><i class="ri-phone-line me-2"></i> <span id="agentViewPhone">(11) 99999-9999</span></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">WhatsApps Vinculados</h6>
+                        <div id="agentWhatsAppsList">
+                            <span class="badge whatsapp-badge me-1 mb-1">(11) 99999-1111</span>
+                            <span class="badge whatsapp-badge me-1 mb-1">(11) 99999-2222</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">Estatísticas</h6>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="h4 mb-0">1,254</div>
+                                <small class="text-muted">Atendimentos</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="h4 mb-0">4.8</div>
+                                <small class="text-muted">Avaliação</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="h4 mb-0">98%</div>
+                                <small class="text-muted">Satisfação</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="editAgentBtn">
+                        <i class="ri-edit-line me-1"></i> Editar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp CRM</span>
+            </a>
+        </div>
+        <nav class="sidebar-menu">
+            <h3>Menu Principal</h3>
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#whatsappSubmenu" class="nav-link dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp</span>
+                <span class="badge bg-primary badge-menu">2</span>
+            </a>
+            <div class="submenu collapse" id="whatsappSubmenu">
+                <a href="connect-whatsapp.html" class="nav-link">
+                    <i class="fas fa-plug"></i>
+                    <span>Conectar WhatsApp</span>
+                </a>
+                <a href="whatsapp-sessions.html" class="nav-link">
+                    <i class="fas fa-list"></i>
+                    <span>Sessões</span>
+                </a>
+            </div>
+            <a href="conversas.html" class="nav-link">
+                <i class="fas fa-comments"></i>
+                <span>Conversas</span>
+                <span class="badge bg-success badge-menu">5</span>
+            </a>
+            <a href="kanban.html" class="nav-link">
+                <i class="fas fa-tasks"></i>
+                <span>Funil de Vendas</span>
+            </a>
+            <a href="quick-messages.html" class="nav-link">
+                <i class="fas fa-bolt"></i>
+                <span>Mensagens Rápidas</span>
+            </a>
+            <a href="bulk-messages.html" class="nav-link">
+                <i class="fas fa-paper-plane"></i>
+                <span>Disparo em Massa</span>
+            </a>
+            <a href="extract-contacts.html" class="nav-link">
+                <i class="fas fa-search-plus"></i>
+                <span>Extrair Contatos</span>
+            </a>
+            <a href="contacts.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Contatos</span>
+            </a>
+            <a href="agents.html" class="nav-link">
+                <i class="fas fa-user-tie"></i>
+                <span>Agentes</span>
+            </a>
+            <h3>Ferramentas</h3>
+            <a href="campaigns.html" class="nav-link">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campanhas</span>
+            </a>
+            <a href="templates.html" class="nav-link">
+                <i class="fas fa-file-alt"></i>
+                <span>Modelos</span>
+            </a>
+            <a href="import-export.html" class="nav-link">
+                <i class="fas fa-file-import"></i>
+                <span>Importar/Exportar</span>
+            </a>
+            <h3>Configurações</h3>
+            <a href="settings.html" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+            <a href="profile.html" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Meu Perfil</span>
+            </a>
+            <a href="#" class="nav-link" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        // Inicialização do Select2
+        $(document).ready(function() {
+            $('#agentWhatsApps').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Selecione os WhatsApps',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#addAgentModal')
+            });
+
+            // Dados de exemplo
+            const agents = [
+                {
+                    id: 1,
+                    name: 'João Silva',
+                    email: 'joao@exemplo.com',
+                    phone: '(11) 99999-1111',
+                    status: 'online',
+                    whatsapps: ['whatsapp1', 'whatsapp2'],
+                    isAdmin: true,
+                    rating: 4.8,
+                    atendimentos: 1254
+                },
+                {
+                    id: 2,
+                    name: 'Maria Santos',
+                    email: 'maria@exemplo.com',
+                    phone: '(11) 99999-2222',
+                    status: 'away',
+                    whatsapps: ['whatsapp1'],
+                    isAdmin: false,
+                    rating: 4.5,
+                    atendimentos: 876
+                },
+                {
+                    id: 3,
+                    name: 'Carlos Oliveira',
+                    email: 'carlos@exemplo.com',
+                    phone: '(11) 99999-3333',
+                    status: 'offline',
+                    whatsapps: ['whatsapp2'],
+                    isAdmin: false,
+                    rating: 4.2,
+                    atendimentos: 542
+                }
+            ];
+
+            // Listar agentes
+            function listAgents() {
+                const tbody = document.getElementById('agentsList');
+                tbody.innerHTML = '';
+
+                agents.forEach(agent => {
+                    const initials = agent.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                    const statusClass = {
+                        'online': 'success',
+                        'offline': 'danger',
+                        'away': 'warning'
+                    }[agent.status] || 'secondary';
+
+                    const statusText = {
+                        'online': 'Online',
+                        'offline': 'Offline',
+                        'away': 'Ausente'
+                    }[agent.status] || 'Desconhecido';
+
+                    const whatsapps = agent.whatsapps.map(wp => 
+                        `<span class="badge whatsapp-badge me-1 mb-1">${wp === 'whatsapp1' ? '(11) 99999-1111' : '(11) 99999-2222'}</span>`
+                    ).join('');
+
+                    const row = `
+                        <tr data-agent-id="${agent.id}">
+                            <td>
+                                <div class="agent-avatar">${initials}</div>
+                            </td>
+                            <td>${agent.name} ${agent.isAdmin ? '<span class="badge bg-info ms-1">Admin</span>' : ''}</td>
+                            <td>${agent.email}</td>
+                            <td><span class="badge bg-${statusClass}">${statusText}</span></td>
+                            <td>${whatsapps}</td>
+                            <td>${agent.atendimentos.toLocaleString()}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="ri-star-fill text-warning me-1"></i>
+                                    <span>${agent.rating}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-sm btn-outline-primary view-agent" data-id="${agent.id}" title="Visualizar">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary edit-agent" data-id="${agent.id}" title="Editar">
+                                        <i class="ri-edit-line"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-agent" data-id="${agent.id}" title="Excluir">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+
+                // Adiciona eventos aos botões
+                document.querySelectorAll('.view-agent').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const agentId = parseInt(btn.getAttribute('data-id'));
+                        viewAgent(agentId);
+                    });
+                });
+
+                document.querySelectorAll('.edit-agent').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const agentId = parseInt(btn.getAttribute('data-id'));
+                        editAgent(agentId);
+                    });
+                });
+
+                document.querySelectorAll('.delete-agent').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const agentId = parseInt(btn.getAttribute('data-id'));
+                        if (confirm('Tem certeza que deseja excluir este agente?')) {
+                            deleteAgent(agentId);
+                        }
+                    });
+                });
+
+                // Abre o modal de visualização ao clicar na linha
+                document.querySelectorAll('tbody tr').forEach(row => {
+                    row.addEventListener('click', () => {
+                        const agentId = parseInt(row.getAttribute('data-agent-id'));
+                        viewAgent(agentId);
+                    });
+                });
+            }
+
+            // Visualizar agente
+            function viewAgent(agentId) {
+                const agent = agents.find(a => a.id === agentId);
+                if (!agent) return;
+
+                const initials = agent.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                const statusText = {
+                    'online': 'Online',
+                    'offline': 'Offline',
+                    'away': 'Ausente'
+                }[agent.status] || 'Desconhecido';
+
+                document.getElementById('agentAvatar').textContent = initials;
+                document.getElementById('agentFullName').textContent = agent.name;
+                document.getElementById('agentViewEmail').textContent = agent.email;
+                document.getElementById('agentViewPhone').textContent = agent.phone || 'Não informado';
+                
+                // Atualiza o status
+                const statusBadge = document.getElementById('agentStatusBadge');
+                statusBadge.className = 'badge bg-' + ({
+                    'online': 'success',
+                    'offline': 'danger',
+                    'away': 'warning'
+                }[agent.status] || 'secondary');
+                statusBadge.textContent = statusText;
+
+                // Atualiza a lista de WhatsApps
+                const whatsappsList = document.getElementById('agentWhatsAppsList');
+                whatsappsList.innerHTML = agent.whatsapps.map(wp => 
+                    `<span class="badge whatsapp-badge me-1 mb-1">${wp === 'whatsapp1' ? '(11) 99999-1111' : '(11) 99999-2222'}</span>`
+                ).join('');
+
+                // Configura o botão de editar
+                document.getElementById('editAgentBtn').onclick = () => {
+                    $('#viewAgentModal').modal('hide');
+                    setTimeout(() => editAgent(agentId), 500);
+                };
+
+                // Exibe o modal
+                const viewModal = new bootstrap.Modal(document.getElementById('viewAgentModal'));
+                viewModal.show();
+            }
+
+            // Editar agente
+            function editAgent(agentId) {
+                const agent = agentId ? agents.find(a => a.id === agentId) : null;
+                const isNew = !agent;
+                
+                const modal = new bootstrap.Modal(document.getElementById('addAgentModal'));
+                const form = document.getElementById('agentForm');
+                
+                // Limpa o formulário
+                form.reset();
+                document.getElementById('agentId').value = isNew ? '' : agent.id;
+                document.getElementById('agentModalTitle').textContent = isNew ? 'Adicionar Novo Agente' : 'Editar Agente';
+                
+                if (!isNew) {
+                    // Preenche os campos com os dados do agente
+                    document.getElementById('agentName').value = agent.name;
+                    document.getElementById('agentEmail').value = agent.email;
+                    document.getElementById('agentPhone').value = agent.phone || '';
+                    document.getElementById('agentStatus').value = agent.status;
+                    document.getElementById('agentIsAdmin').checked = agent.isAdmin;
+                    
+                    // Seleciona os WhatsApps
+                    $('#agentWhatsApps').val(agent.whatsapps).trigger('change');
+                } else {
+                    // Configuração para novo agente
+                    $('#agentWhatsApps').val(null).trigger('change');
+                }
+                
+                // Exibe o modal
+                modal.show();
+            }
+
+            // Salvar agente
+            document.getElementById('agentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = document.getElementById('agentId').value;
+                const isNew = !id;
+                
+                const agentData = {
+                    id: isNew ? Date.now() : parseInt(id),
+                    name: document.getElementById('agentName').value,
+                    email: document.getElementById('agentEmail').value,
+                    phone: document.getElementById('agentPhone').value,
+                    status: document.getElementById('agentStatus').value,
+                    whatsapps: Array.from(document.getElementById('agentWhatsApps').selectedOptions).map(o => o.value),
+                    isAdmin: document.getElementById('agentIsAdmin').checked,
+                    rating: 0,
+                    atendimentos: 0
+                };
+                
+                if (isNew) {
+                    agents.push(agentData);
+                } else {
+                    const index = agents.findIndex(a => a.id === agentData.id);
+                    if (index !== -1) {
+                        // Mantém a avaliação e atendimentos existentes
+                        agentData.rating = agents[index].rating;
+                        agentData.atendimentos = agents[index].atendimentos;
+                        agents[index] = agentData;
+                    }
+                }
+                
+                // Atualiza a lista
+                listAgents();
+                
+                // Fecha o modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addAgentModal'));
+                modal.hide();
+                
+                // Exibe mensagem de sucesso
+                alert(`Agente ${isNew ? 'adicionado' : 'atualizado'} com sucesso!`);
+            });
+
+            // Excluir agente
+            function deleteAgent(agentId) {
+                const index = agents.findIndex(a => a.id === agentId);
+                if (index !== -1) {
+                    agents.splice(index, 1);
+                    listAgents();
+                    alert('Agente excluído com sucesso!');
+                }
+            }
+
+            // Filtros
+            document.getElementById('btnFilter').addEventListener('click', function() {
+                // Implementar lógica de filtro
+                alert('Filtro aplicado!');
+            });
+
+            // Inicializa a lista de agentes
+            listAgents();
+        });
+    </script>
+    <!-- Menu Manager (se existir) -->
+    <script src="js/menu-manager.js"></script>
+    <script>
+        // Inicialização do menu responsivo (igual index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+                });
+            }
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('show');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

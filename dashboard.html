@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - WhatsApp CRM Pro</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/modern-dashboard.css">
+    <link rel="stylesheet" href="css/menu-animations.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp CRM</span>
+            </a>
+        </div>
+        <nav class="sidebar-menu">
+            <h3>Menu Principal</h3>
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#whatsappSubmenu" class="nav-link dropdown-toggle" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp</span>
+                <span class="badge bg-primary badge-menu">2</span>
+            </a>
+            <div class="submenu collapse" id="whatsappSubmenu">
+                <a href="connect-whatsapp.html" class="nav-link">
+                    <i class="fas fa-plug"></i>
+                    <span>Conectar WhatsApp</span>
+                </a>
+                <a href="whatsapp-sessions.html" class="nav-link">
+                    <i class="fas fa-list"></i>
+                    <span>Sessões</span>
+                </a>
+            </div>
+            <a href="conversas.html" class="nav-link">
+                <i class="fas fa-comments"></i>
+                <span>Conversas</span>
+                <span class="badge bg-success badge-menu">5</span>
+            </a>
+            <a href="kanban.html" class="nav-link">
+                <i class="fas fa-tasks"></i>
+                <span>Funil de Vendas</span>
+            </a>
+            <a href="quick-messages.html" class="nav-link">
+                <i class="fas fa-bolt"></i>
+                <span>Mensagens Rápidas</span>
+            </a>
+            <a href="bulk-messages.html" class="nav-link">
+                <i class="fas fa-paper-plane"></i>
+                <span>Disparo em Massa</span>
+            </a>
+            <a href="extract-contacts.html" class="nav-link">
+                <i class="fas fa-search-plus"></i>
+                <span>Extrair Contatos</span>
+            </a>
+            <a href="contacts.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Contatos</span>
+            </a>
+            <a href="agents.html" class="nav-link">
+                <i class="fas fa-user-tie"></i>
+                <span>Agentes</span>
+            </a>
+            <h3>Ferramentas</h3>
+            <a href="campaigns.html" class="nav-link">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campanhas</span>
+            </a>
+            <a href="templates.html" class="nav-link">
+                <i class="fas fa-file-alt"></i>
+                <span>Modelos</span>
+            </a>
+            <a href="import-export.html" class="nav-link">
+                <i class="fas fa-file-import"></i>
+                <span>Importar/Exportar</span>
+            </a>
+            <h3>Configurações</h3>
+            <a href="settings.html" class="nav-link">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+            </a>
+            <a href="profile.html" class="nav-link">
+                <i class="fas fa-user"></i>
+                <span>Meu Perfil</span>
+            </a>
+            <a href="#" class="nav-link" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </a>
+        </nav>
+    </div>
+    <nav class="top-navbar">
+        <button class="menu-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="user-menu">
+            <div class="user-info">
+                <p class="user-name">João Silva</p>
+                <p class="user-role">Administrador</p>
+            </div>
+            <div class="user-avatar">
+                <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navigation -->
+        <nav class="top-navbar">
+            <button class="menu-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-menu">
+                <div class="user-info">
+                    <p class="user-name">João Silva</p>
+                    <p class="user-role">Administrador</p>
+                </div>
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=25D366&color=fff" alt="User Avatar">
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <div class="container-fluid py-4">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="h3 mb-0">Dashboard</h1>
+                            <p class="text-muted mb-0">Bem-vindo de volta, João!</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Nova Campanha
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="stats-value">1,254</h3>
+                        <p class="stats-label">Total de Contatos</p>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 12%</span>
+                            <span class="text-muted">vs mês passado</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-success bg-opacity-10 text-success">
+                            <i class="fas fa-comment-alt"></i>
+                        </div>
+                        <h3 class="stats-value">856</h3>
+                        <p class="stats-label">Mensagens Hoje</p>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 8%</span>
+                            <span class="text-muted">vs ontem</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <h3 class="stats-value">24</h3>
+                        <p class="stats-label">Campanhas Ativas</p>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 4%</span>
+                            <span class="text-muted">vs mês passado</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-danger bg-opacity-10 text-danger">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="stats-value">89%</h3>
+                        <p class="stats-label">Taxa de Entrega</p>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 2%</span>
+                            <span class="text-muted">vs mês passado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Desempenho das Campanhas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="campaignChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Distribuição de Contatos</h5>
+                        </div>
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <div class="chart-container" style="width: 100%; max-width: 300px;">
+                                <canvas id="contactsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities & Quick Actions -->
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Atividades Recentes</h5>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Ver Tudo</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar-sm">
+                                                <div class="avatar-title bg-primary bg-opacity-10 text-primary rounded-circle">
+                                                    <i class="fas fa-comment-alt"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Nova mensagem recebida</h6>
+                                            <p class="mb-0 text-muted">De: Maria Silva - Há 5 minutos</p>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <span class="badge bg-primary">Novo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar-sm">
+                                                <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle">
+                                                    <i class="fas fa-check"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Campanha concluída com sucesso</h6>
+                                            <p class="mb-0 text-muted">"Promoção de Verão" enviada para 250 contatos</p>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <small class="text-muted">Há 1 hora</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar-sm">
+                                                <div class="avatar-title bg-warning bg-opacity-10 text-warning rounded-circle">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Falha no envio de mensagens</h6>
+                                            <p class="mb-0 text-muted">5 mensagens não foram entregues</p>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <small class="text-muted">Há 3 horas</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0 me-3">
+                                            <div class="avatar-sm">
+                                                <div class="avatar-title bg-info bg-opacity-10 text-info rounded-circle">
+                                                    <i class="fas fa-user-plus"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Novo contato adicionado</h6>
+                                            <p class="mb-0 text-muted">Carlos Eduardo foi adicionado à lista "Clientes Ouro"</p>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <small class="text-muted">Há 5 horas</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Ações Rápidas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary mb-2">
+                                    <i class="fas fa-paper-plane me-2"></i>Nova Mensagem
+                                </button>
+                                <button class="btn btn-outline-primary mb-2">
+                                    <i class="fas fa-plus-circle me-2"></i>Adicionar Contato
+                                </button>
+                                <button class="btn btn-outline-primary mb-2">
+                                    <i class="fas fa-file-import me-2"></i>Importar Lista
+                                </button>
+                                <button class="btn btn-outline-primary mb-2">
+                                    <i class="fas fa-chart-pie me-2"></i>Ver Relatórios
+                                </button>
+                                <button class="btn btn-outline-primary">
+                                    <i class="fas fa-cog me-2"></i>Configurações
+                                </button>
+                            </div>
+                            <div class="mt-4">
+                                <h6 class="mb-3">Uso da Conta</h6>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Mensagens deste mês</span>
+                                        <span>1,245/5,000</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 65%;" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span>Armazenamento</span>
+                                        <span>245MB/1GB</span>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 24%;" aria-valuenow="24" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <a href="#" class="text-primary">Atualizar Plano</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script>
+        // Toggle Sidebar
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('show');
+            document.querySelector('.main-content').classList.toggle('show-sidebar');
+        });
+
+        // Logout Button
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Add logout logic here
+            window.location.href = 'index.html';
+        });
+
+        // Campaign Chart
+        const campaignCtx = document.getElementById('campaignChart').getContext('2d');
+        const campaignChart = new Chart(campaignCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+                datasets: [
+                    {
+                        label: 'Mensagens Enviadas',
+                        data: [650, 590, 800, 810, 1050, 1200, 1100],
+                        borderColor: '#25D366',
+                        backgroundColor: 'rgba(37, 211, 102, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    },
+                    {
+                        label: 'Mensagens Recebidas',
+                        data: [400, 450, 500, 600, 700, 750, 800],
+                        borderColor: '#075E54',
+                        backgroundColor: 'rgba(7, 94, 84, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Contacts Chart
+        const contactsCtx = document.getElementById('contactsChart').getContext('2d');
+        const contactsChart = new Chart(contactsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Clientes Ativos', 'Clientes Inativos', 'Novos Contatos', 'Inadimplentes'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: [
+                        '#25D366',
+                        '#6C757D',
+                        '#17A2B8',
+                        '#DC3545'
+                    ],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20
+                        }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // Add animation to stats cards on scroll
+        const statsCards = document.querySelectorAll('.stats-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        statsCards.forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Menu Manager (se existir) -->
+    <script src="js/menu-manager.js"></script>
+    <script>
+        // Inicialização do menu responsivo (igual index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    document.body.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+                });
+            }
+            if (localStorage.getItem('sidebarCollapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
+            const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+            dropdownToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    submenu.classList.toggle('show');
+                    this.setAttribute('aria-expanded', 
+                        this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
